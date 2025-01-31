@@ -1,9 +1,9 @@
 module.exports = {
     apps: [
         {
-            name: 'Smartfarming dashboard',
+            name: 'Smart farming dashboard',
             port: '11000',
-            script: './server/index.mjs'
+            script: './.output/server/index.mjs'
         }
     ]
 }
