@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+body {
+    font-family: 'DM Sans', sans-serif;
+}
+
+/*
+
+    TailwindCSS classes
+
+*/
+
+.text-ui {
+    color: var(--ui-text);
+}
+
+.text-primary {
+    color: var(--ui-primary);
+}
+
+.bg-text {
+    background-color: var(--ui-text);
+}
+
+.bg-elevated {
+    background-color: var(--ui-bg-elevated);
+}
+
+.bg-accented {
+    background-color: var(--ui-bg-accented);
+}
+
+.rounded-ui {
+    border-radius: var(--ui-radius);
+}
+
+.rounded-ui-double {
+    border-radius: calc(var(--ui-radius) * 2);
+}
+
+/* Markdown */
+
+.markdown-renderer {
+    @apply text-justify pr-2 -mt-5;
+}
+
+.markdown-renderer h1 {
+    @apply text-3xl font-bold mt-5;
+}
+
+.markdown-renderer h2 {
+    @apply text-2xl font-bold mt-5;
+}
+
+.markdown-renderer h3 {
+    @apply text-xl font-bold mt-5 -mb-2;
+}
+
+.markdown-renderer h4 {
+    @apply text-lg font-bold mt-5 -mb-2;
+}
+
+.markdown-renderer p {
+    @apply mt-4;
+}
+
+.markdown-renderer .chip {
+    background-color: var(--ui-bg-elevated);
+    padding: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 0.9rem;
+    border-radius: calc(var(--ui-radius) * 1.5);
+}
+
+.markdown-renderer .chip-big {
+    background-color: var(--ui-bg-elevated);
+    padding: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 1.3rem;
+    border-radius: calc(var(--ui-radius) * 1.5);
+}
+
+.markdown-renderer ul {
+    list-style: inside;
+}
+
+.markdown-renderer li {
+    @apply mt-3;
+}
+
+.markdown-renderer li .chip {
+    @apply -ml-3;
+}
+
+.markdown-renderer .shiki {
+    @apply mt-5;
+}
+
+/* Scroll bar */
+::-webkit-scrollbar {
+    width: 4px;
+    border-radius: 1000px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 1000px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ui-border-accented);
+    border-radius: 1000px;
+}
+
+.hide-scroll::-webkit-scrollbar {
+    width: 0px;
+}
