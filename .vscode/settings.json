@@ -2,16 +2,17 @@
     "files.exclude": {
         "tsconfig.json": true,
         "package-lock.json": true,
-        // "package.json": true,
+        "package.json": true,
         // "nuxt.config.ts": true,
         ".gitignore": true,
         ".nuxt": true,
         "node_modules": true,
         // "README.md": true,
         "server/tsconfig.json": true,
-        // "ecosystem.config.js": true,
+        "ecosystem.config.js": true,
         // ".env": true,
         "--host": true,
         ".output": true,
+        ".data": true,
     }
 }
