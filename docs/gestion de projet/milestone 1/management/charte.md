@@ -15,19 +15,27 @@
 
 ### **1.Chef de projet & Responsable communication [Valentin]**
 
-     Responsable de la gestion du temps, des risques et de la communication.
+```text
+Responsable de la gestion du temps, des risques et de la communication.
+```
 
 ### **2.Ingénieur Hardware & Capteurs**
 
-     Conçoit l’architecture matérielle du système (choix du microcontrôleur, capteurs, …) et s'occupe des achats.
+```text
+Conçoit l’architecture matérielle du système (choix du microcontrôleur, capteurs, …) et s'occupe des achats.
+```
 
 ### **3.Ingénieur Firmware & Communication**
 
-     Développe le code embarqué pour le microcontrôleur.
+```text
+Développe le code embarqué pour le microcontrôleur.
+```
 
 ### **4.Ingénieur Cloud & Interface utilisateur**
 
-     Gère la connectivité du système avec le cloud et implémente l’interface utilisateur.
+```text
+Gère la connectivité du système avec le cloud et implémente l’interface utilisateur.
+```
 
 - **Les rôles sont tournants** surtout entre les 3 ingénieurs en fonction des besoins et de l’évolution du projet.
 
