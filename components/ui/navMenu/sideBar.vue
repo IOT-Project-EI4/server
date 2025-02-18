@@ -1,25 +1,27 @@
 <template>
     <div class="flex flex-col p-4">
-        <div class="flex">
+        <NuxtLink to="/" class="flex cursor-pointer">
             <div class="flex-1 flex gap-3 items-center">
                 <img src="/logo.webp" class="w-12 h-12 md:h-14 md:w-14 rounded-ui" />
                 <h2 class="font-medium text-2xl" :class="{ 'text-center': !useMobile }"> Smart farming </h2>
             </div>
 
             <UButton v-if="useMobile" size="xl" label="Close" icon="i-heroicons-x-mark" color="neutral" variant="outline" @click="$emit('closeMenu')" />
-        </div>
+        </NuxtLink>
 
         <USeparator class="mt-5 mb-5" color="neutral" />
 
-        <div class="p-3 flex items-center bg-elevated rounded-ui-double cursor-pointer">
+        <NuxtLink to="/docs" class="p-3 flex items-center bg-elevated rounded-ui-double cursor-pointer">
             <div class="p-2 rounded-sm bg-accented">
                 <UIcon name="i-ion-file-tray-full-outline" size="30" class="bg-text -mb-2" />
             </div>
             
             <p class="flex-1 text-center text-ui font-medium"> Project documentation </p>
-        </div>
+        </NuxtLink>
 
-        <UNavigationMenu orientation="vertical" :items="routes" class="mt-3" />
+        <p class="mt-5 font-medium"> Menu : </p>
+
+        <UNavigationMenu orientation="vertical" :items="routes" class="mt-1" />
         
         <div class="flex-1"></div>
 
@@ -37,8 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { UIcon } from '#components';
-
     defineProps({
         useMobile: {
             type: Boolean,

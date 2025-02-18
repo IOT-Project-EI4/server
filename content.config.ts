@@ -5,8 +5,9 @@ export default defineContentConfig({
         test: defineCollection({
             // Load every file inside the `content` directory
             source: {
-                cwd: 'docs/resources-and-management',
-                include: '**',
+                cwd: 'public/resources-and-management',
+                include: '**/*.md',
+                exclude: ['**/*.xlsx'],
             },
 
             schema: z.object({
