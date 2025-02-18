@@ -93,7 +93,11 @@ La liste du matériel que nous avons sélectionné est disponible ici : [Liste m
 
 ### Total
 
-![Coût Total](../../images/cout-total.png)
+![Coût Total](../../images/cout-total.png)*
+
+### Indicateurs de performances
+
+Les indicateurs de performances sont disponibles ici : [Indicateurs de performances](management/indicateur-de-performance.md)
 
 ## Bibliographie
 
