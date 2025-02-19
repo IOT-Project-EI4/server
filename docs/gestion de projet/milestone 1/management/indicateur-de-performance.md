@@ -43,7 +43,7 @@ Même problème ici, l'évolution est simulée.
 
 Si nous avions fait un tableau de bord après la fin de la conception du projet, voici le type de résultat que nous aurions.
 
-![graphes des kpi](../csv-kpi/graphes.png)
+![graphes des kpi](../../../images/graphes.png)
 
 ## 5️⃣ Actions Correctives  
 
