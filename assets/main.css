@@ -127,6 +127,15 @@ body {
     padding: 15px;
 }
 
+.markdown-renderer pre[class="language-text"] {
+    margin-top: 25px;
+    margin-bottom: 20px;
+}
+
+.markdown-renderer pre[class="language-text"] code {
+    padding: 15px;
+}
+
 /* Scroll bar */
 ::-webkit-scrollbar {
     width: 4px;

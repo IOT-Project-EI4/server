@@ -15,20 +15,20 @@ export const useRoutesStore = defineStore('routes', () => {
                 to: "/docs",
 
                 children: [
-                    // {
-                    //     label: 'Introduction',
-                    //     to: '/docs',
-                    // },
+                    {
+                        label: 'Introduction',
+                        to: '/docs',
+                    },
 
                     {
                         label: 'Revue de projet 1',
                         to: '/docs/milestones/1',
                     },
 
-                    // {
-                    //     label: 'Revue de projet 2',
-                    //     to: '/docs/milestones/2',
-                    // },
+                    {
+                        label: 'Revue de projet 2',
+                        to: '/docs/milestones/2',
+                    },
                 ],
             },
         ],
