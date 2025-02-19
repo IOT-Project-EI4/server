@@ -6,12 +6,12 @@ This file contains the schema for the projects smart_farming.
 
 -- Create database and drop if exists
 
-DROP DATABASE IF EXISTS `smart_autonomous_system`;
-CREATE DATABASE `smart_autonomous_system`;
+DROP DATABASE IF EXISTS `smart-autonomous-system`;
+CREATE DATABASE `smart-autonomous-system`;
 
 -- Use database
 
-USE `smart_autonomous_system`;
+USE `smart-autonomous-system`;
 
 -- Table: serre
 
