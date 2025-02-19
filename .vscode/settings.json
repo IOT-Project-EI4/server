@@ -7,12 +7,13 @@
         ".gitignore": true,
         ".nuxt": true,
         "node_modules": true,
-        // "README.md": true,
+        "README.md": true,
         "server/tsconfig.json": true,
         "ecosystem.config.js": true,
         // ".env": true,
         "--host": true,
         ".output": true,
         ".data": true,
+        "content.config.ts": true,
     }
 }

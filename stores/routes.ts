@@ -5,7 +5,7 @@ export const useRoutesStore = defineStore('routes', () => {
         [
             {
                 label: 'Introduction',
-                icon: 'i-heroicons-book-open',
+                icon: 'i-ion-book-outline',
                 to: "/",
             },
 

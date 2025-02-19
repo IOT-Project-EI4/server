@@ -14,11 +14,11 @@ export default defineNuxtConfig({
         ENV: process.env.ENV,
 
         DB: {
-            DB_NAME: [""], // # TODO: nom de la base de données
+            DB_NAME: ["smart-farming"],
             DB_HOST: process.env.DB_HOST,
 
-            DB_USER: "",
-            DB_PASS: "",
+            DB_USER: process.env.DB_USER,
+            DB_PASS: process.env.DB_PASS,
 
             DB_CONNECTION_LIMIT: 10,
             DB_WAIT_FOR_CONNECTIONS: true,

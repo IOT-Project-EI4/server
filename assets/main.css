@@ -136,6 +136,10 @@ body {
     padding: 15px;
 }
 
+.markdown-renderer input[type="checkbox"] {
+    display: none;
+}
+
 /* Scroll bar */
 ::-webkit-scrollbar {
     width: 4px;

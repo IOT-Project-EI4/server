@@ -6,17 +6,17 @@ This file contains the schema for the projects smart_farming.
 
 -- Create database and drop if exists
 
-DROP DATABASE IF EXISTS `smart-autonomous-system`;
-CREATE DATABASE `smart-autonomous-system`;
+DROP DATABASE IF EXISTS `smart-farming`;
+CREATE DATABASE `smart-farming`;
 
 -- Use database
 
-USE `smart-autonomous-system`;
+USE `smart-farming`;
 
--- Table: serre
+-- Table: greenhouse
 
-DROP TABLE IF EXISTS serre;
-CREATE TABLE serre (
+DROP TABLE IF EXISTS greenhouse;
+CREATE TABLE greenhouse (
     id INT PRIMARY KEY AUTO_INCREMENT,
     diameter FLOAT NOT NULL,
     latitude FLOAT NOT NULL,
@@ -24,26 +24,26 @@ CREATE TABLE serre (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table: serre_section
+-- Table: device_group
 
-DROP TABLE IF EXISTS serre_section;
-CREATE TABLE serre_section (
+DROP TABLE IF EXISTS device_group;
+CREATE TABLE device_group (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
-    serre_id INT NOT NULL,
+    greenhouse_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table: autonomous_system
+-- Table: device
 
-DROP TABLE IF EXISTS autonomous_system;
-CREATE TABLE autonomous_system (
+DROP TABLE IF EXISTS device;
+CREATE TABLE device (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     mac_adr VARCHAR(255) NOT NULL,
     registration_nb INT NOT NULL,
     battery_level INT,
-    serre_section_id INT NOT NULL,
+    device_group_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE sensor (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     mac_adr VARCHAR(255) NOT NULL,
-    autonomous_system_id INT NOT NULL,
+    device_id INT NOT NULL,
     sensor_type_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -80,10 +80,10 @@ CREATE TABLE measurements (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table: measurements_units
+-- Table: measurement_units
 
-DROP TABLE IF EXISTS measurements_units;
-CREATE TABLE measurements_units (
+DROP TABLE IF EXISTS measurement_units;
+CREATE TABLE measurement_units (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     symbol VARCHAR(255) NOT NULL,
@@ -100,45 +100,43 @@ CREATE TABLE unit_links (
     unit_id INT NOT NULL
 );
 
---Table : photo
+-- Table : images
 
-DROP TABLE IF EXISTS photo;
-CREATE TABLE photo (
+DROP TABLE IF EXISTS images;
+CREATE TABLE images (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     sensor_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
 -- Add foreign keys
 
-ALTER TABLE serre_section ADD FOREIGN KEY (serre_id) REFERENCES serre(id);
-ALTER TABLE autonomous_system ADD FOREIGN KEY (serre_section_id) REFERENCES serre_section(id);
+ALTER TABLE device_group ADD FOREIGN KEY (greenhouse_id) REFERENCES greenhouse(id);
+ALTER TABLE device ADD FOREIGN KEY (device_group_id) REFERENCES device_group(id);
 
-ALTER TABLE sensor ADD FOREIGN KEY (autonomous_system_id) REFERENCES autonomous_system(id);
+ALTER TABLE sensor ADD FOREIGN KEY (device_id) REFERENCES device(id);
 ALTER TABLE sensor ADD FOREIGN KEY (sensor_type_id) REFERENCES sensor_type(id);
 
 ALTER TABLE measurements ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
-ALTER TABLE measurements ADD FOREIGN KEY (unit_id) REFERENCES measurements_units(id);
+ALTER TABLE measurements ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
 
-ALTER TABLE unit_links ADD FOREIGN KEY (unit_id) REFERENCES measurements_units(id);
-ALTER TABLE photo ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
+ALTER TABLE unit_links ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
+ALTER TABLE images ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
 
-ALTER TABLE sensor_type ADD FOREIGN KEY (unit_id) REFERENCES measurements_units(id);
+ALTER TABLE sensor_type ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
 
--- Add sample serre
+-- Add sample greenhouse
 
-INSERT INTO serre (diameter, latitude, logitude) VALUES (10, 47.3, 0.7);
-INSERT INTO serre_section (name, serre_id) VALUES ('Sans_section', 1);
+INSERT INTO greenhouse (diameter, latitude, logitude) VALUES (10, 47.3, 0.7);
+INSERT INTO device_group (name, greenhouse_id) VALUES ('Sans groupe', 1);
 
 -- Add sample units
 
-INSERT INTO measurements_units (name, symbol, lower_bound, upper_bound) VALUES ('Temperature', '°C', -20, 50);
-INSERT INTO measurements_units (name, symbol, lower_bound, upper_bound) VALUES ('Humidity', '%', 0, 100);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Temperature', '°C', -20, 50);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Humidity', '%', 0, 100);
 
-INSERT INTO measurements_units (name, symbol, lower_bound, upper_bound) VALUES ('Current', 'A', 0, 10);
-INSERT INTO measurements_units (name, symbol, lower_bound, upper_bound) VALUES ('Capacity', 'mA', 0, 10000);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Current', 'A', 0, 10);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Capacity', 'mA', 0, 10000);
 
-INSERT INTO measurements_units (name, symbol, lower_bound, upper_bound) VALUES ('Voltage', 'V', 0, 10);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Voltage', 'V', 0, 10);
