@@ -49,3 +49,7 @@
 id INT PRIMARY KEY AUTO_INCREMENT,
 name VARCHAR(255) NOT NULL,
 mac_adr VARCHAR(255) NOT NULL,
+
+## diagramme
+
+[Diagramme Excalidraw](https://excalidraw.com/#json=-SP7ESy_ZjPYgTvdbngr4,mQdFdOpaE416_2AZIF2D5Q)
