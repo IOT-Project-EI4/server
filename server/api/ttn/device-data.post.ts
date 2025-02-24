@@ -4,11 +4,13 @@ import { requestHandler } from '~/server/composables/api/apiRequests/requestsHan
 import { sqlRequestHandler } from '~/server/composables/api/database/sqlResquestHandler';
 
 export default defineEventHandler(async (event) => {
+    console.log(await readBody(event));
+
     return await requestHandler({
         event: event,
         log: false,
 
-        name: "Smart farming - Test route",
+        name: "Smart farming - TTN device data",
         dbName: "smart-farming",
 
         queryParams: [],
