@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         }
     },
 
-    modules: ['@nuxt/ui', '@nuxt/content', '@pinia/nuxt', '@nuxtjs/device', '@nuxthq/studio'],
+    modules: ['@nuxt/ui', '@nuxt/content', '@pinia/nuxt', '@nuxtjs/device'],
 
     runtimeConfig: {
         ENV: process.env.ENV,
