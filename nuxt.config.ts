@@ -2,6 +2,10 @@ export default defineNuxtConfig({
     compatibilityDate: '2025-02-01',
     devtools: { enabled: false },
 
+    devServer: {
+        port: 11000,
+    },
+
     nitro: {
         experimental: {
             tasks: true
