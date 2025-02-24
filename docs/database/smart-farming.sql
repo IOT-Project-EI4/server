@@ -52,9 +52,8 @@ DROP TABLE IF EXISTS sensor;
 CREATE TABLE sensor (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
-    mac_adr VARCHAR(255) NOT NULL,
     device_id INT NOT NULL,
-    sensor_type_id INT NOT NULL,
+    sensor_type_id INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -143,4 +142,5 @@ INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('
 
 -- Add test devices
 
-INSERT INTO device (id, name, mac_adr, registered, battery_level, device_group_id) VALUES (2, 'Solar panel test device', '00:00:00:00:00:01', 1, 0, 1);
+INSERT INTO device (name, mac_adr, registered, battery_level, device_group_id) VALUES ('Solar panel test device', '00:00:00:00:00:01', 1, 0, 1);
+INSERT INTO sensor(name, device_id) VALUES ('Device 2 battery ADC', '1');

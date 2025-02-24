@@ -5,7 +5,6 @@ export default defineNitroPlugin((nitroApp) => {
 
     // Get runtime configuration
     const config = useRuntimeConfig();
-    console.log(config.ENV);
 
     // Get database configuration
     const DBconfig = useRuntimeConfig().DB;

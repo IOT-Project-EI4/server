@@ -6,7 +6,7 @@ import { sqlRequestHandler } from '~/server/composables/api/database/sqlResquest
 export default defineEventHandler(async (event) => {
     return await requestHandler({
         event: event,
-        log: false,
+        log: true,
 
         name: "Smart farming - TTN device data",
         dbName: "smart-farming",
@@ -18,11 +18,8 @@ export default defineEventHandler(async (event) => {
 });
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
-    // Log the data
-    console.log(params);
-
     // Insert the data into the database
-    let query = `INSERT INTO device_data (device_id, type, value) VALUES ('${params["id"]}', '${params["type"]}', '${params["value"]}')`;
+    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / 100}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
     await sqlRequestHandler(dbPool, query);
 
     return "Succes";

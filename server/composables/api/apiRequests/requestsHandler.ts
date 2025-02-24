@@ -24,8 +24,6 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
         return "";
     }
 
-    console.log(query);
-
     let params: { [index: string]: any } = {};
 
     // Check if the parameters are valid
@@ -36,7 +34,7 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
 
             // @ts-ignore
             for(let p of param) {
-                if(!query[p]) {
+                if(!ref[p]) {
                     if(config.ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${p}`);
 
                     setResponseStatus(handlerConfig.event, 400);
@@ -56,10 +54,10 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
     }
 
     // If dev mode, log the request and print each parameter
-    // if(config.ENV == "DEV" && handlerConfig.log) {
-    //     console.log(handlerConfig.name);
-    //     for(let param of handlerConfig.queryParams) console.log(`${param}: ${query[param]}`);
-    // }
+    if(config.ENV == "DEV" && handlerConfig.log) {
+        console.log(handlerConfig.name);
+        for(let [key, value] of Object.entries(params)) console.log(`${key}: ${value}`);
+    }
 
     // Call the handler
     let response = await handlerConfig.handler(handlerConfig.event, dbPool, params);
