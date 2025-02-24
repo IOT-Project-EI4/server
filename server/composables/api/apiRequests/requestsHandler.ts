@@ -18,9 +18,13 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
     if(method == "GET") query = getQuery(handlerConfig.event);
     else if(method == "POST") query = await readBody(handlerConfig.event);
     else {
+        if(config.ENV == "DEV" && handlerConfig.log) console.log("Method not allowed");
+
         setResponseStatus(handlerConfig.event, 405);
         return "";
     }
+
+    console.log(query);
 
     let params: { [index: string]: any } = {};
 
@@ -33,6 +37,8 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
             // @ts-ignore
             for(let p of param) {
                 if(!query[p]) {
+                    if(config.ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${p}`);
+
                     setResponseStatus(handlerConfig.event, 400);
                     return "Missing parameters";
                 } else ref = ref[p];
@@ -41,6 +47,8 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
             params[param[param.length - 1]] = ref;
         } else {
             if(!query[param]) {
+                if(config.ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${param}`);
+
                 setResponseStatus(handlerConfig.event, 400);
                 return "Missing parameters";
             } else params[param] = query[param];
@@ -48,10 +56,10 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
     }
 
     // If dev mode, log the request and print each parameter
-    if(config.ENV == "DEV" && handlerConfig.log) {
-        console.log(handlerConfig.name);
-        for(let param of handlerConfig.queryParams) console.log(`${param}: ${query[param]}`);
-    }
+    // if(config.ENV == "DEV" && handlerConfig.log) {
+    //     console.log(handlerConfig.name);
+    //     for(let param of handlerConfig.queryParams) console.log(`${param}: ${query[param]}`);
+    // }
 
     // Call the handler
     let response = await handlerConfig.handler(handlerConfig.event, dbPool, params);
