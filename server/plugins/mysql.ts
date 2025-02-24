@@ -3,6 +3,10 @@ import mysql from 'mysql';
 export default defineNitroPlugin((nitroApp) => {
     console.log("MySQL plugin loaded");
 
+    // Get runtime configuration
+    const config = useRuntimeConfig();
+    console.log(config.ENV);
+
     // Get database configuration
     const DBconfig = useRuntimeConfig().DB;
 
