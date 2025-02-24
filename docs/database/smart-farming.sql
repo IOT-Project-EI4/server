@@ -41,7 +41,7 @@ CREATE TABLE device (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     mac_adr VARCHAR(255) NOT NULL,
-    registration_nb INT NOT NULL,
+    registered BOOLEAN NOT NULL,
     battery_level INT,
     device_group_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -140,3 +140,7 @@ INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('
 INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Capacity', 'mA', 0, 10000);
 
 INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Voltage', 'V', 0, 10);
+
+-- Add test devices
+
+INSERT INTO device (id, name, mac_adr, registered, battery_level, device_group_id) VALUES (2, 'Solar panel test device', '00:00:00:00:00:01', 1, 0, 1);

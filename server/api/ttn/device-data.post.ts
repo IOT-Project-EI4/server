@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
         name: "Smart farming - TTN device data",
         dbName: "smart-farming",
 
-        queryParams: [],
+        queryParams: [["uplink_message", "decoded_payload", "id"], ["uplink_message", "decoded_payload", "type"], ["uplink_message", "decoded_payload", "value"]],
 
         handler: handler,
     });
@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
     // Log the data
     console.log("Test route called");
+    console.log(params)
 
     return "Succes";
 }

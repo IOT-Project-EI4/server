@@ -26,10 +26,25 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
 
     // Check if the parameters are valid
     for(let param of handlerConfig.queryParams) {
-        if(!query[param]) {
-            setResponseStatus(handlerConfig.event, 400);
-            return "Missing parameters";
-        } else params[param] = query[param];
+        // Check if the parameter is an array
+        if(Array.isArray(param)) {
+            let ref = query;
+
+            // @ts-ignore
+            for(let p of param) {
+                if(!query[p]) {
+                    setResponseStatus(handlerConfig.event, 400);
+                    return "Missing parameters";
+                } else ref = ref[p];
+            }
+
+            params[param[param.length - 1]] = ref;
+        } else {
+            if(!query[param]) {
+                setResponseStatus(handlerConfig.event, 400);
+                return "Missing parameters";
+            } else params[param] = query[param];
+        }
     }
 
     // If dev mode, log the request and print each parameter
@@ -55,7 +70,7 @@ interface requestHandlerConfig {
     name: string;
     dbName: string;
 
-    queryParams: Array<string>;
+    queryParams: Array<string> | Array<Array<string>>;
 
     handler: Function;
 }
