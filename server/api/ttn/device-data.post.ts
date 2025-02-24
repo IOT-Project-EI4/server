@@ -4,8 +4,6 @@ import { requestHandler } from '~/server/composables/api/apiRequests/requestsHan
 import { sqlRequestHandler } from '~/server/composables/api/database/sqlResquestHandler';
 
 export default defineEventHandler(async (event) => {
-    console.log(await readBody(event));
-
     return await requestHandler({
         event: event,
         log: false,
@@ -21,8 +19,11 @@ export default defineEventHandler(async (event) => {
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
     // Log the data
-    console.log("Test route called");
-    console.log(params)
+    console.log(params);
+
+    // Insert the data into the database
+    let query = `INSERT INTO device_data (device_id, type, value) VALUES ('${params["id"]}', '${params["type"]}', '${params["value"]}')`;
+    await sqlRequestHandler(dbPool, query);
 
     return "Succes";
 }
