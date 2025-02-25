@@ -2,7 +2,7 @@
     <div class="flex flex-col p-4">
         <NuxtLink to="/" class="flex cursor-pointer">
             <div class="flex-1 flex gap-3 items-center">
-                <img src="/icons/logo.webp" class="w-12 h-12 md:h-14 md:w-14 rounded-ui" />
+                <img src="/icons/logo/logo.webp" class="w-12 h-12 md:h-14 md:w-14 rounded-ui" />
                 <h2 class="font-medium text-2xl" :class="{ 'text-center': !useMobile }"> Smart farming </h2>
             </div>
 

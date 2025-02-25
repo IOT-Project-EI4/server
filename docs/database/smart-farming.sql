@@ -95,7 +95,7 @@ CREATE TABLE measurement_units (
 DROP TABLE IF EXISTS unit_links;
 CREATE TABLE unit_links (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    mac_adr VARCHAR(255) NOT NULL,
+    sensor_id INT NOT NULL,
     unit_id INT NOT NULL
 );
 
@@ -120,7 +120,9 @@ ALTER TABLE sensor ADD FOREIGN KEY (sensor_type_id) REFERENCES sensor_type(id);
 ALTER TABLE measurements ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
 ALTER TABLE measurements ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
 
+ALTER TABLE unit_links ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
 ALTER TABLE unit_links ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
+
 ALTER TABLE images ADD FOREIGN KEY (sensor_id) REFERENCES sensor(id);
 
 ALTER TABLE sensor_type ADD FOREIGN KEY (unit_id) REFERENCES measurement_units(id);
@@ -144,3 +146,4 @@ INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('
 
 INSERT INTO device (name, mac_adr, registered, battery_level, device_group_id) VALUES ('Solar panel test device', '00:00:00:00:00:01', 1, 0, 1);
 INSERT INTO sensor(name, device_id) VALUES ('Device 2 battery ADC', '1');
+INSERT INTO unit_links(sensor_id, unit_id) VALUES (1, 5);

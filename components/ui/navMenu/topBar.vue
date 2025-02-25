@@ -1,7 +1,7 @@
 <template>
     <div class="relative overflow-hidden w-full flex h-20">
         <NuxtLink to="/" class="flex-1 flex gap-3 items-center ml-4">
-            <img src="/icons/logo.webp" class="w-12 h-12 md:h-14 md:w-14 rounded-ui" />
+            <img src="/icons/logo/logo.webp" class="w-12 h-12 md:h-14 md:w-14 rounded-ui" />
             <h2 class="font-semibold text-2xl"> Smart farming </h2>
         </NuxtLink>
         

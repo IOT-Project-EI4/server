@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
     // Insert the data into the database
-    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / 100}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
+    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / 50}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
     await sqlRequestHandler(dbPool, query);
 
     return "Succes";
