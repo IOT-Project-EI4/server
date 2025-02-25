@@ -5,7 +5,7 @@
                 <div class="flex flex-row gap-10">
                     <div class="flex flex-col justify-center items-center">
                         <p class="font-bold text-3xl"> {{ Math.round(weather.temperature_2m) }}°C </p>
-                        <p class="w-full mt-2"> Real feel: <span class="font-semibold">{{ Math.round(weather.apparent_temperature) }}°C</span> </p>
+                        <p class="w-full mt-2"> Perceived: <span class="font-semibold">{{ Math.round(weather.apparent_temperature) }}°C</span> </p>
                     </div>
 
                     <div class="flex-1 flex justify-center items-center pt-2 pb-2">
