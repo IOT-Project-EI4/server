@@ -109,9 +109,12 @@ body {
     @apply mt-2;
 }
 
+.markdown-renderer .mdc-table {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
 .markdown-renderer table {
-    margin-top: 20px;
-    margin-bottom: 10px;
     border-radius: calc(var(--ui-radius) * 2);
     background-color: var(--ui-bg-elevated);
     overflow: hidden;
@@ -120,11 +123,14 @@ body {
 .markdown-renderer table th {
     background-color: var(--ui-bg-accented);
     padding: 15px;
+    border-top: 2px solid var(--ui-border-accented);
+    border-left: 2px solid var(--ui-border-accented);
+    border-right: 2px solid var(--ui-border-accented);
 }
 
 .markdown-renderer table td {
-    border: 2px solid var(--ui-border-accented);
     padding: 15px;
+    border: 2px solid var(--ui-border-accented);
 }
 
 .markdown-renderer pre[class="language-text"] {
@@ -142,18 +148,23 @@ body {
 
 /* Scroll bar */
 ::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
+    height: 5px;
     border-radius: 1000px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--ui-bg-muted);
     border-radius: 1000px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--ui-border-accented);
     border-radius: 1000px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ui-primary);
 }
 
 .hide-scroll::-webkit-scrollbar {

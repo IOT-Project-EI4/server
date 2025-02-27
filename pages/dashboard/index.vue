@@ -2,9 +2,53 @@
     <div class="flex-1 flex flex-col">
         <UBreadcrumb class="mb-5 mt-1.5" :items="bread" />
 
-        <div class="flex flex-col gap-5 max-w-[360px]">
-            <MeteoCard class="bg-[var(--ui-bg-elevated)]" />
+        <div class="flex flex-wrap gap-5" :class="{ 'flex-col': !showDesktop }">
+            <div class="flex-1 flex flex-col gap-5">
+                <TimeCard class="bg-[var(--ui-bg-elevated)]" />
+                <MeteoCard class="bg-[var(--ui-bg-elevated)]" />
+            </div>
 
+            <div class="flex-1 flex">
+                <TemplateCard class="flex-1 bg-[var(--ui-bg-elevated)]">
+                    <div class="flex-1 flex flex-col gap-2.5">
+                        <h3 class="text-lg font-semibold"> Devices status </h3>
+
+                        <TemplateCard class="bg-[var(--ui-bg-accented)]" :margin=false>
+                            <p class="font-semibold"> Registered devices: {{ devicesStatus == 'success' ? devices.length : 0 }} </p>
+                        </TemplateCard>
+
+                        <div class="flex-1 flex gap-3">
+                            <TemplateCard class="flex-1 bg-[var(--ui-bg-accented)]" :margin=false>
+                                <div class="flex-1 flex flex-col gap-1 justify-center items-center">
+                                    <p class="font-semibold"> Online devices </p>
+                                    <p class="font-semibold text-2xl"> {{ onlineDevices }} </p>
+                                </div>
+                            </TemplateCard>
+
+                            <TemplateCard class="flex-1 bg-[var(--ui-bg-accented)]" :class="{ 'bg-[var(--ui-error)]': offlineDevices > 0  }" :margin=false>
+                                <div class="flex-1 flex flex-col gap-1 justify-center items-center">
+                                    <p class="font-semibold"> Offline devices </p>
+                                    <p class="font-semibold text-2xl"> {{ offlineDevices }} </p>
+                                </div>
+                            </TemplateCard>
+                        </div>
+
+                        <div class="-mt-0.5 flex text-[var(--ui-text-muted)]">
+                            <p class="-ml-2.5 scale-90"> Offline : lastest update > 3hrs </p>
+                        </div>
+                    </div>
+                </TemplateCard>
+            </div>
+
+            <div class="flex-1 flex min-h-[250px]" :class="{ 'min-w-[350px]': showDesktop }">
+                <div class="relative flex-1 flex rounded-2xl overflow-hidden backdrop-blur-md bg-[var(--ui-bg-elevated)]" :class="{ 'p-4': showDesktop, 'p-3' : !showDesktop }">
+                    <p class="font-bold z-10 text-[var(--ui-bg)] text-xl"> Photos galery </p>
+                    <!-- <img class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full" src="" /> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col gap-5 mt-5">
             <div v-if="devices == 'loading'" v-for="index in 3">
                 <USkeleton class="bg-[var(--ui-bg)] h-[320px] w-[342px] opacity-60 rounded-2xl" />
             </div>
@@ -13,10 +57,16 @@
                 <p> Error </p>
             </div>
 
-            <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-3">
+            <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-2">
+                <p class="font-bold text-2xl"> {{ device.name }} </p>
+
                 <div v-for="sensor, sensorIndex in device.sensors" :key="sensor.id">
-                    <div v-for="unit, unitIndex in sensor.units" :key="unit.id">
-                        <Doughnut class="bg-[var(--ui-bg-elevated)]" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                    <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex flex-wrap gap-5">
+                        <Doughnut class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                        
+                        <NuxtLink :to="`dashboard/devices/${device.id}`" class="flex flex-1">
+                            <Value class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol />
+                        </NuxtLink>
                     </div>
                 </div>
             </div>
@@ -25,19 +75,41 @@
 </template>
 
 <script setup lang="ts">
+    import TimeCard from '~/components/ui/cards/prebuild/time.vue';
     import MeteoCard from '~/components/ui/cards/prebuild/meteo.vue';
-    import Doughnut from "~/components/ui/charts/doughnut.vue";
+    import TemplateCard from '~/components/ui/cards/template.vue';
 
-    import { cfetch  } from '~/composables/general/fetch';
-    import type { Loading, Error } from '~/interfaces/global';
+    import Doughnut from "~/components/ui/charts/doughnut.vue";
+    import Value from "~/components/ui/charts/value.vue";
 
     import { useDevicesStore } from '~/stores/devices';
+    import { useDisplayStore } from '~/stores/display';
+
+    const displayStore = useDisplayStore();
+    const { showDesktop } = storeToRefs(displayStore);
+
+    const onlineDevices = ref(0);
+    const offlineDevices = ref(0);
 
     const deviceStore = useDevicesStore();
-    const { devices } = storeToRefs(deviceStore);
+    const { devices, devicesStatus } = storeToRefs(deviceStore);
 
     watchEffect(() => {
-        console.log(devices.value);
+        if(devicesStatus.value != "idle" && devicesStatus.value != "pending" && devicesStatus.value != "error") {
+            // Count online and offline devices, if latestData of all sensors are more than 3 hours ago then the device is offline
+            devices.value.forEach(device => {
+                let online = false;
+
+                device.sensors.forEach((sensor : any) => {
+                    sensor.units.forEach((unit : any) => {
+                        if(new Date().getTime() - new Date(unit.latestData.created_at).getTime() < 1000 * 60 * 60 * 3) online = true;
+                    });
+                });
+
+                if(online) onlineDevices.value++;
+                else offlineDevices.value++;
+            });
+        }
     });
 
     const routesStore = useRoutesStore();

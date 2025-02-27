@@ -54,6 +54,7 @@ CREATE TABLE sensor (
     name VARCHAR(255) NOT NULL,
     device_id INT NOT NULL,
     sensor_type_id INT DEFAULT NULL,
+    graph_type VARCHAR(255) DEFAULT "value", -- value, progress, gauge
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

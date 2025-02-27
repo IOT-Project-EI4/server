@@ -18,8 +18,6 @@ export default defineEventHandler(async (event) => {
 });
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
-    // Get devices
-
     // SELECT * FROM devices WHERE house_id = ? AND approved = 1
     let sql = mysql.format(`SELECT * FROM device WHERE device_group_id = ?`, [params.greenhouse_id]);
     let devices = await sqlRequestHandler(dbPool, sql);

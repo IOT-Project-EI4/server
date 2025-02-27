@@ -25,8 +25,6 @@
 </template>
 
 <script setup lang="ts">
-    
-
     const routesStore = useRoutesStore();
     // @ts-ignore
     const bread = ref([routesStore.routes[0][1]]);

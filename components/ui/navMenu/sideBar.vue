@@ -29,9 +29,9 @@
 
         <UAvatarGroup class="ml-3" size="lg">
             <a href="https://github.com/valentin-llv" target="_blank"> <UAvatar src="https://github.com/valentin-llv.png" alt="Valentin Le Lièvre" /> </a>
-            <UAvatar src="https://github.com/jjdag.png" alt="Romain Hamel" />
-            <UAvatar src="https://github.com/lagejo.png" alt="Neil Richter" />
-            <UAvatar src="https://github.com/inessa-kch.png" alt="Neil Richter" />
+            <a href="https://github.com/jjdag" target="_blank"> <UAvatar src="https://github.com/jjdag.png" alt="jjdag" /> </a>
+            <a href="https://github.com/lagejo" target="_blank"> <UAvatar src="https://github.com/lagejo.png" alt="lagejo" /> </a>
+            <a href="https://github.com/inessa-kch" target="_blank"> <UAvatar src="https://github.com/inessa-kch.png" alt="inessa-kch" /> </a>
         </UAvatarGroup>
 
         <UNavigationMenu orientation="vertical" :items="bottomMenu" class="mt-3" />

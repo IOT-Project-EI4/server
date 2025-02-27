@@ -1,27 +1,20 @@
 import { defineStore } from 'pinia';
 
-import type { Device, Room, Unit, Measurement } from '~/interfaces/iot/connected-home';
+import { SERVER_URL } from '~/constants/server';
 
 import type { Loading, Error } from '~/interfaces/global';
 import { cfetch  } from '~/composables/general/fetch';
 
 export const useDevicesStore = defineStore('devicesStore', () => {
-    const devices: Ref<Array<Device> | Loading | Error> = ref("loading");
     // const pendingDevices: Ref<Array<Device> | Loading | Error> = ref("loading");
 
-    async function getGreenhouseDevices(greenhouse_id: number) {
-        // Get devices from greenhouse
-        await cfetch({
-            url: "client/get-devices",
+    const { data : devices, status : devicesStatus, refresh: devicesRefresh } = useLazyAsyncData('devices', async () => {
+        let response : any = await $fetch(SERVER_URL + "client/get-devices", {
             query: { greenhouse_id: 1, },
-
-            handler: (data: any | "error") => {
-                if(data == "error") devices.value = "error";
-                else if(data == undefined) devices.value = [];
-                else devices.value = data.devices;
-            }
         });
-    }
+
+        return JSON.parse(response).devices;
+    });
 
     // async function getPendingDevices() {
     //     await cfetch({
@@ -66,9 +59,6 @@ export const useDevicesStore = defineStore('devicesStore', () => {
     //     return result;
     // }
 
-    if(devices.value == "loading") getGreenhouseDevices(1); // useIotUserDataStore().houseID
-    // if(pendingDevices.value == "loading") getPendingDevices();
-
     // return { devices, pendingDevices, getHouseDevices, getPendingDevices, registerNewDevice, loadDeviceDataHistory }
-    return { devices, getGreenhouseDevices }
+    return { devices, devicesStatus, devicesRefresh }
 });

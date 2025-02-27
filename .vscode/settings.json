@@ -10,9 +10,9 @@
         "README.md": true,
         "server/tsconfig.json": true,
         "ecosystem.config.js": true,
-        // ".env": true,
+        ".env": true,
         "--host": true,
-        ".output": true,
+        // ".output": true,
         ".data": true,
         "content.config.ts": true,
     }

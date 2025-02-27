@@ -4,7 +4,7 @@
         
         <UApp>
             <NuxtLayout class="absolute w-full h-full">
-                <NuxtPage />
+                <NuxtPage :key="$route.fullPath" />
             </NuxtLayout>
         </UApp>
     </div>

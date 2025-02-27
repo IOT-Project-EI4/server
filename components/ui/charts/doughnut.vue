@@ -29,11 +29,11 @@
 
 <script setup lang="ts">
     import { Chart } from 'vue-chartjs';
-    import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Filler, ArcElement } from 'chart.js';
+    import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Filler, ArcElement, DoughnutController } from 'chart.js';
 
     import TemplateCard from '~/components/ui/cards/template.vue';
 
-    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Filler, ArcElement);
+    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Filler, ArcElement, DoughnutController);
 
     const props = defineProps({
         id: {
