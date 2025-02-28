@@ -34,7 +34,7 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
 
             // For each unit get the latest data
             for(let k = 0; k < units.length; k++) {
-                sql = mysql.format(`SELECT * FROM measurements WHERE sensor_id = ? AND unit_id ORDER BY created_at DESC LIMIT 1`, [sensors[j].id, units[k].id]);
+                sql = mysql.format(`SELECT * FROM measurements WHERE sensor_id = ? AND unit_id = ? ORDER BY created_at DESC LIMIT 1`, [sensors[j].id, units[k].unit_id]);
                 let data = await sqlRequestHandler(dbPool, sql);
 
                 units[k].latestData = data[0];

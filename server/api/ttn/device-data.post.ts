@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
         name: "Smart farming - TTN device data",
         dbName: "smart-farming",
 
-        queryParams: [["uplink_message", "decoded_payload", "id"], ["uplink_message", "decoded_payload", "type"], ["uplink_message", "decoded_payload", "value"]],
+        queryParams: [["uplink_message", "decoded_payload", "id"], ["uplink_message", "decoded_payload", "type"], ["uplink_message", "decoded_payload", "value"], ["uplink_message", "decoded_payload", "division_f"]],
 
         handler: handler,
     });
@@ -19,8 +19,11 @@ export default defineEventHandler(async (event) => {
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
     // Insert the data into the database
-    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / 50}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
+    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / params["division_f"]}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
     await sqlRequestHandler(dbPool, query);
 
-    return "Succes";
+    // Run the data analysis task
+    runTask("device-data-analysis", { payload: { params }, context: { dbPool } });
+
+    return "Success";
 }

@@ -2,7 +2,7 @@
     <div class="flex-1 flex flex-col overflow-hidden" :class="{ '-mr-1.5': !showDesktop }">
         <UBreadcrumb class="mb-5 mt-1.5" :items="bread" />
         
-        <div class="flex-1 flex" :class="{ 'overflow-hidden -mt-3': showDesktop, 'flex-col overflow-auto': !showDesktop }">
+        <div class="flex-1 flex overflow-x-hidden" :class="{ 'overflow-hidden -mt-3': showDesktop, 'flex-col overflow-y-auto': !showDesktop }">
             <div v-if="showDesktop" class="flex">
                 <div class="flex flex-col w-[320px] mt-4 pl-4 pr-4 gap-3 overflow-auto">
                     <h3 class="text-xl font-bold"> Table of contents </h3>
@@ -27,9 +27,9 @@
                 <USeparator class="pl-3 pr-3 mb-2 mt-2" :class="{ 'hidden': showDesktop }" />
             </div>
             
-            <div class="flex-1 flex justify-center" :class="{ 'overflow-auto pl-5': showDesktop }">
+            <div class="flex-1 flex justify-center" :class="{ 'overflow-y-auto overflow-x-hidden pl-5': showDesktop }">
                 <div class="flex-1 flex max-w-[1000px] w-[1000px] pr-1" :class="{ 'pr-3': showDesktop, 'overflow-hidden': !showDesktop }">
-                    <ContentRenderer id="mk-renderer" v-if="markdown" class="markdown-renderer" :value="markdown" :class="{ 'overflow-hidden': !showDesktop }" />
+                    <ContentRenderer id="mk-renderer" v-if="markdown" class="markdown-renderer flex flex-1" :value="markdown" :class="{ 'overflow-hidden': !showDesktop }" />
 
                     <!-- <div v-else>
                         <p class="text-red-500"> No content available. </p>
@@ -50,7 +50,7 @@
     const tocElements = ref();
 
     // @ts-ignore
-    const bread = ref([routesStore.routes[0][1], {
+    const bread = ref([routesStore.routes[1][0], {
         label: "Milestone " + route.params.slug[0],
         to: "/docs/milestones/" + route.params.slug[0],
     }]);
@@ -72,6 +72,7 @@
         if(data == null) data = await queryCollection('test').path("/docs/gestion-de-projet/milestone-1/management/readme").first();
         
         fixImagesPath(data.body.value);
+        fixTables(data.body.value);
         return data;
     });
 
@@ -83,7 +84,7 @@
     onMounted(() => {
         watchPostEffect(() => {
             if(status.value == "success") {
-                console.log(tocElements.value);
+                document.getElementById(route.hash.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
 
                 observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -100,11 +101,9 @@
                 markdown.value?.body.toc?.links.forEach((item: any) => {
                     nextTick(() => {
                         setTimeout(() => {
-                            console.log(item.id, document.getElementById(item.id) != null);
-
                             const targetElement = document.getElementById(item.id);
                             if (targetElement) observer.observe(targetElement);
-                        }, 300);
+                        }, 0);
                     });
                 });
             }
@@ -144,5 +143,26 @@
         }
 
         return data;
+    }
+
+    function fixTables(data: Array<any>): Array<any> {
+        for(let i = 0; i < data.length; i++) {
+            if(data[i] instanceof Array) {
+                if(data[i][0] == 'table') {
+                    data[i] = [
+                        'div',
+                        { class: 'mdc-table flex overflow-visible' },
+                        [
+                            'div',
+                            { class: 'overflow-x-auto pb-2' },
+                            data[i],
+                        ]
+                    ]
+                }  else data[i] = fixTables(data[i]);
+            }
+        }
+
+        return data;
+
     }
 </script>

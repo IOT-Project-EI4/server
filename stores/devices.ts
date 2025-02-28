@@ -59,6 +59,5 @@ export const useDevicesStore = defineStore('devicesStore', () => {
     //     return result;
     // }
 
-    // return { devices, pendingDevices, getHouseDevices, getPendingDevices, registerNewDevice, loadDeviceDataHistory }
     return { devices, devicesStatus, devicesRefresh }
 });

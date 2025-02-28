@@ -1,5 +1,5 @@
 <template>
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col pb-3 pr-3 -mr-3 overflow-auto">
         <UBreadcrumb class="mb-5 mt-1.5" :items="bread" />
 
         <div class="flex flex-wrap gap-5" :class="{ 'flex-col': !showDesktop }">
@@ -60,7 +60,7 @@
             <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-2">
                 <p class="font-bold text-2xl"> {{ device.name }} </p>
 
-                <div v-for="sensor, sensorIndex in device.sensors" :key="sensor.id">
+                <div v-for="sensor, sensorIndex in device.sensors" :key="sensor.id" class="flex flex-col gap-5">
                     <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex flex-wrap gap-5">
                         <Doughnut class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
                         
@@ -111,7 +111,7 @@
             });
         }
     });
-
+    
     const routesStore = useRoutesStore();
     // @ts-ignore
     const bread = ref([routesStore.routes[0][1]]);

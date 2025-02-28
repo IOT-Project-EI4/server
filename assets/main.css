@@ -65,15 +65,6 @@ body {
     @apply mt-3;
 }
 
-.markdown-renderer code {
-    background-color: var(--ui-bg-elevated);
-    padding-bottom: 3px;
-    padding-top: 2px;
-    padding-left: 6px;
-    padding-right: 6px;
-    border-radius: calc(var(--ui-radius) * 1.5);
-}
-
 .markdown-renderer a[rel="nofollow"] {
     color: var(--ui-primary);
     text-decoration: underline;
@@ -136,10 +127,14 @@ body {
 .markdown-renderer pre[class="language-text"] {
     margin-top: 25px;
     margin-bottom: 20px;
+    overflow: hidden;
+    padding: 15px;
+    background-color: var(--ui-bg-elevated);
+    border-radius: calc(var(--ui-radius) * 1.5);
 }
 
 .markdown-renderer pre[class="language-text"] code {
-    padding: 15px;
+    white-space: pre-wrap;
 }
 
 .markdown-renderer input[type="checkbox"] {

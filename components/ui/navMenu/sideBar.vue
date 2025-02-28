@@ -9,9 +9,7 @@
             <UButton v-if="useMobile" size="xl" label="Close" icon="i-heroicons-x-mark" color="neutral" variant="outline" @click="$emit('closeMenu')" />
         </NuxtLink>
 
-        <USeparator class="mt-5 mb-5" color="neutral" />
-
-        <NuxtLink to="/docs" class="p-3 flex items-center bg-elevated rounded-ui-double cursor-pointer">
+        <NuxtLink to="/docs" class="mt-5 p-3 flex items-center bg-elevated rounded-ui-double cursor-pointer">
             <div class="p-2 rounded-sm bg-accented">
                 <UIcon name="i-ion-file-tray-full-outline" size="30" class="bg-text -mb-2" />
             </div>

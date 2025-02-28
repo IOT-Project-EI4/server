@@ -10,6 +10,14 @@ export const useRoutesStore = defineStore('routes', () => {
             },
 
             {
+                label: 'Dashboard',
+                icon: 'i-ion-easel-outline',
+                to: "/dashboard",
+            },
+        ],
+
+        [
+            {
                 label: 'Documentation',
                 icon: 'i-ion-file-tray-full-outline',
                 to: "/docs",
@@ -30,12 +38,6 @@ export const useRoutesStore = defineStore('routes', () => {
                         to: '/docs/milestones/2',
                     },
                 ],
-            },
-
-            {
-                label: 'Dashboard',
-                icon: 'i-ion-easel-outline',
-                to: "/dashboard",
             },
         ],
     ];
