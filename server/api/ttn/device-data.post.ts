@@ -18,12 +18,19 @@ export default defineEventHandler(async (event) => {
 });
 
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
+    console.log("Test device get data");
+    console.log(params);
+
     // Insert the data into the database
     let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${params["value"] / params["division_f"]}, '${params["value"]}', ${params["id"]}, ${params["type"]})`;
     await sqlRequestHandler(dbPool, query);
 
+    console.log("Data inserted");
+
     // Run the data analysis task
     runTask("device-data-analysis", { payload: { params }, context: { dbPool } });
+
+    console.log("Task ran");
 
     return "Success";
 }

@@ -13,17 +13,7 @@
 
         <div class="flex-1 flex flex-col p-3 overflow-hidden">
             <div class="flex h-0 duration-300 ease-in-out -ml-3 -mt-3 -mr-3 mb-3 overflow-hidden" :class="{ 'h-23': showDesktop && ($route.path.includes('dashboard') || $route.path == '/docs')}">
-                <div class="h-23 flex-1 flex items-center">
-                    <div class="w-[400px] flex flex-col">
-                        <UModal v-model:open="open">
-                            <UButton label="Search ..." color="neutral" variant="subtle" icon="i-lucide-search" />
-
-                            <template #content>
-                                <UCommandPalette v-model:search-term="searchTerm" :loading="status === 'pending'" :groups="groups" placeholder="Search ..." class="h-80" @update:model-value="onSelect" />
-                            </template>
-                        </UModal>
-                    </div>
-                </div>
+                <desktopBar />
             </div>
             
             <div class="border-t-1 -m-3 border-[var(--ui-border)] rounded-tl-2xl p-3 flex-1 flex duration-300 overflow-hidden" :class="{ 'rounded-tl-none': !(showDesktop && ($route.path.includes('dashboard') || $route.path == '/docs')) }">
@@ -36,41 +26,9 @@
 <script setup lang="ts">
     import sideBar from '~/components/ui/navMenu/sideBar.vue';
     import topBar from '~/components/ui/navMenu/topBar.vue';
+    import desktopBar from '~/components/ui/navMenu/desktopBar.vue';
     
     import { useDisplayStore } from '~/stores/display';
-
-    const searchTerm = ref('');
-    const open = ref(false);
-
-    const { data: docsTitles, status } = useLazyAsyncData('search-sections', async () => {
-        let result = await queryCollectionSearchSections('test');
-
-        let formattedResult: any = [];
-        let savedTitles: any = [];
-
-        for(let section of result) {
-            if(!savedTitles.includes(section.title)) {
-                formattedResult.push({
-                    label: section.title,
-                    to: section.id,
-                });
-            }
-
-            savedTitles.push(section.title);
-        }
-
-        return formattedResult;
-    }); 
-
-    function onSelect(selectedItem: any) {
-        open.value = false;
-        useRouter().push(selectedItem.to.replaceAll('gestion-de-projet/', '').replaceAll('milestone-', 'milestones/').replaceAll('readme', '').replaceAll('/#', '#'));
-    }
-
-    const groups = computed(() => [{
-        id: 'docs',
-        items: docsTitles.value || [],
-    }]);
 
     const displayStore = useDisplayStore();
     const { showDesktop } = storeToRefs(displayStore);

@@ -43,7 +43,7 @@ async function batteryAdcAnalysis(params: any, dbPool: mysql.Pool) {
     let batteryPercentage = voltageToPercentage[params.value / params.division_f];
 
     // Store data in the database
-    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${batteryPercentage}, '${batteryPercentage}', ${params.id}, ${6})`;
+    let query = `INSERT INTO measurements (value, value_string, sensor_id, unit_id) VALUES (${batteryPercentage}, '${batteryPercentage}', ${params.id}, ${4})`;
     await sqlRequestHandler(dbPool, query);
 
     return { result: "" };

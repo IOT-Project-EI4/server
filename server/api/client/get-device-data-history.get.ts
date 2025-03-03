@@ -48,7 +48,7 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
                 sum += data[i].value;
                 count ++;
 
-                if(date.getTime() + 60 * 1000 * 60 < lastDate.getTime()) {
+                if(date.getTime() + 60 * 1000 < lastDate.getTime()) { // 60 * 1000 * 60
                     filteredData.unshift({
                         created_at: lastDate,
                         value: sum / count,

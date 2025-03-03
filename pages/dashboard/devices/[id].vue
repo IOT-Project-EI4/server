@@ -1,8 +1,8 @@
 <template>
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden pr-3">
         <UBreadcrumb class="mb-5 mt-1.5" :items="bread" />
 
-        <div class="flex-1 flex flex-col gap-3 overflow-hidden">
+        <div class="flex-1 flex flex-col gap-3">
             <div v-if="dataStatus == 'error'">
                 <p class="text-red-500"> Device not found </p>
             </div>

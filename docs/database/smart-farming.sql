@@ -42,7 +42,6 @@ CREATE TABLE device (
     name VARCHAR(255) NOT NULL,
     mac_adr VARCHAR(255) NOT NULL,
     registered BOOLEAN NOT NULL,
-    battery_level INT,
     device_group_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -54,7 +53,6 @@ CREATE TABLE sensor (
     name VARCHAR(255) NOT NULL,
     device_id INT NOT NULL,
     sensor_type_id INT DEFAULT NULL,
-    graph_type VARCHAR(255) DEFAULT "value", -- value, progress, gauge
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -97,7 +95,8 @@ DROP TABLE IF EXISTS unit_links;
 CREATE TABLE unit_links (
     id INT PRIMARY KEY AUTO_INCREMENT,
     sensor_id INT NOT NULL,
-    unit_id INT NOT NULL
+    unit_id INT NOT NULL,
+    graph_type VARCHAR(255) DEFAULT "value" -- value, progress, gauge
 );
 
 -- Table : images
@@ -138,13 +137,20 @@ INSERT INTO device_group (name, greenhouse_id) VALUES ('Sans groupe', 1);
 INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Temperature', '°C', -20, 50);
 INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Humidity', '%', 0, 100);
 
-INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Current', 'A', 0, 10);
-INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Capacity', 'mA', 0, 10000);
+INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (4, 'Battery capacity', '%', 0, 100);
+INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (5, 'Battery voltage', 'V', 2, 4);
 
-INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Voltage', 'V', 0, 10);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Red light', '', 0, 255);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Green light', '', 0, 255);
+INSERT INTO measurement_units (name, symbol, lower_bound, upper_bound) VALUES ('Blue light', '', 0, 255);
 
 -- Add test devices
 
-INSERT INTO device (name, mac_adr, registered, battery_level, device_group_id) VALUES ('Solar panel test device', '00:00:00:00:00:01', 1, 0, 1);
-INSERT INTO sensor(name, device_id) VALUES ('Device 2 battery ADC', '1');
-INSERT INTO unit_links(sensor_id, unit_id) VALUES (1, 5);
+INSERT INTO device (id, name, mac_adr, registered, device_group_id) VALUES (2, 'Test device', '0', 1, 1);
+
+INSERT INTO sensor(id, name, device_id) VALUES (2, 'Battery ADC', 2);
+INSERT INTO sensor(id, name, device_id) VALUES (6, 'Temperature', 2);
+
+INSERT INTO unit_links(sensor_id, unit_id, graph_type) VALUES (2, 5, 'value');
+INSERT INTO unit_links(sensor_id, unit_id, graph_type) VALUES (2, 4, 'doughnut');
+INSERT INTO unit_links(sensor_id, unit_id, graph_type) VALUES (6, 1, 'doughnut');

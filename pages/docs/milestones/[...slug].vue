@@ -8,7 +8,7 @@
                     <h3 class="text-xl font-bold"> Table of contents </h3>
 
                     <div class="flex flex-col gap-4">
-                        <p ref="tocElements" @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
+                        <p @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
                     </div>
                 </div>
 
@@ -19,7 +19,7 @@
                 <UAccordion :unmountOnHide=false :items="items" class="pr-3 pl-3 -mt-3">
                     <template #body="{ item }">
                         <div class="flex flex-col gap-4">
-                            <p ref="tocElements" @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
+                            <p @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
                         </div>
                     </template>
                 </UAccordion>
@@ -46,8 +46,6 @@
 
     const displayStore = useDisplayStore();
     const { showDesktop } = storeToRefs(displayStore);
-
-    const tocElements = ref();
 
     // @ts-ignore
     const bread = ref([routesStore.routes[1][0], {
@@ -84,8 +82,6 @@
     onMounted(() => {
         watchPostEffect(() => {
             if(status.value == "success") {
-                document.getElementById(route.hash.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
-
                 observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         let tocItem = document.getElementById(entry.target.id + '-toc');
@@ -103,7 +99,9 @@
                         setTimeout(() => {
                             const targetElement = document.getElementById(item.id);
                             if (targetElement) observer.observe(targetElement);
-                        }, 0);
+
+                            document.getElementById(route.hash.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+                        }, 500);
                     });
                 });
             }

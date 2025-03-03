@@ -25,7 +25,7 @@
                                 </div>
                             </TemplateCard>
 
-                            <TemplateCard class="flex-1 bg-[var(--ui-bg-accented)]" :class="{ 'bg-[var(--ui-error)]': offlineDevices > 0  }" :margin=false>
+                            <TemplateCard class="flex-1" :class="{ 'bg-[var(--ui-bg-accented)]': offlineDevices == 0, 'bg-[var(--ui-error)]': offlineDevices > 0  }" :margin=false>
                                 <div class="flex-1 flex flex-col gap-1 justify-center items-center">
                                     <p class="font-semibold"> Offline devices </p>
                                     <p class="font-semibold text-2xl"> {{ offlineDevices }} </p>
@@ -57,17 +57,34 @@
                 <p> Error </p>
             </div>
 
+            <!-- <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-2">
+                <p class="font-bold text-2xl"> {{ device.name }} </p>
+
+                <div v-for="sensor, sensorIndex in device.sensors" :key="sensor.id" class="flex flex-row gap-2">
+                    <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex flex-wrap gap-5 bg-red-500">
+                        <NuxtLink v-for="unit, unitIndex in sensor.units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex">
+                            <Doughnut v-if="sensor.graph_type == 'doughnut'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                            <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol />
+                        </NuxtLink>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- <div v-for="unit, unitIndex in units" :key="unit.id" class="flex flex-wrap gap-5 bg-red-500"> -->
+                <!-- <NuxtLink v-for="unit, unitIndex in units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex">
+                    <Doughnut v-if="sensor.graph_type == 'doughnut'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                    <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol />
+                </NuxtLink> -->
+            <!-- </div> -->
+
             <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-2">
                 <p class="font-bold text-2xl"> {{ device.name }} </p>
 
-                <div v-for="sensor, sensorIndex in device.sensors" :key="sensor.id" class="flex flex-col gap-5">
-                    <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex flex-wrap gap-5">
+                <div class="flex flex-row flex-wrap gap-2">
+                    <NuxtLink v-for="unit, unitIndex in units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex flex-1">
                         <Doughnut class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
-                        
-                        <NuxtLink :to="`dashboard/devices/${device.id}`" class="flex flex-1">
-                            <Value class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol />
-                        </NuxtLink>
-                    </div>
+                        <!-- <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol /> -->
+                    </NuxtLink>
                 </div>
             </div>
         </div>
@@ -94,8 +111,12 @@
     const deviceStore = useDevicesStore();
     const { devices, devicesStatus } = storeToRefs(deviceStore);
 
+    const units = ref([]);
+
     watchEffect(() => {
         if(devicesStatus.value != "idle" && devicesStatus.value != "pending" && devicesStatus.value != "error") {
+            units.value = [];
+
             // Count online and offline devices, if latestData of all sensors are more than 3 hours ago then the device is offline
             devices.value.forEach(device => {
                 let online = false;
@@ -103,6 +124,8 @@
                 device.sensors.forEach((sensor : any) => {
                     sensor.units.forEach((unit : any) => {
                         if(new Date().getTime() - new Date(unit.latestData.created_at).getTime() < 1000 * 60 * 60 * 3) online = true;
+
+                        units.value.push(unit);
                     });
                 });
 
