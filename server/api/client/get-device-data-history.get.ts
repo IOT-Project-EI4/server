@@ -43,12 +43,12 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
                 let date = new Date(data[i].created_at);
 
                 // If date is older than 24 hours then discard the data
-                if(date.getTime() + 60 * 1000 * 60 * 72 < Date.now()) break;
+                // if(date.getTime() + 60 * 1000 * 60 * 72 < Date.now()) break;
 
                 sum += data[i].value;
                 count ++;
 
-                if(date.getTime() + 60 * 1000 < lastDate.getTime()) { // 60 * 1000 * 60
+                if(date.getTime() + 60 * 1000 * 60 < lastDate.getTime()) { // 60 * 1000 * 60
                     filteredData.unshift({
                         created_at: lastDate,
                         value: sum / count,

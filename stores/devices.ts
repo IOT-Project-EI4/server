@@ -2,9 +2,6 @@ import { defineStore } from 'pinia';
 
 import { SERVER_URL } from '~/constants/server';
 
-import type { Loading, Error } from '~/interfaces/global';
-import { cfetch  } from '~/composables/general/fetch';
-
 export const useDevicesStore = defineStore('devicesStore', () => {
     // const pendingDevices: Ref<Array<Device> | Loading | Error> = ref("loading");
 
