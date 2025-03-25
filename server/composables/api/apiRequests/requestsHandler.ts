@@ -34,22 +34,14 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
 
             // @ts-ignore
             for(let p of param) {
-                if(!ref[p]) {
-                    if(config.ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${p}`);
-
-                    setResponseStatus(handlerConfig.event, 400);
-                    return "Missing parameters";
-                } else ref = ref[p];
+                if(!ref[p]) return missingParam(handlerConfig, p); // Missing parameter
+                else ref = ref[p];
             }
 
             params[param[param.length - 1]] = ref;
         } else {
-            if(!query[param]) {
-                if(config.ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${param}`);
-
-                setResponseStatus(handlerConfig.event, 400);
-                return "Missing parameters";
-            } else params[param] = query[param];
+            if(!query[param]) return missingParam(handlerConfig, param); // Missing parameter
+            else params[param] = query[param];
         }
     }
 
@@ -67,6 +59,13 @@ export async function requestHandler(handlerConfig: requestHandlerConfig) {
 
     setResponseStatus(handlerConfig.event, 200);
     return response;
+}
+
+function missingParam(handlerConfig: requestHandlerConfig, param: string) {
+    if(useRuntimeConfig().ENV == "DEV" && handlerConfig.log) console.log(`Missing parameter: ${param}`);
+
+    setResponseStatus(handlerConfig.event, 400);
+    return "Missing parameters";
 }
 
 interface requestHandlerConfig {

@@ -3,37 +3,39 @@
         <UBreadcrumb class="mb-5 mt-1.5" :items="bread" />
         
         <div class="flex-1 flex overflow-x-hidden" :class="{ 'overflow-hidden -mt-3': showDesktop, 'flex-col overflow-y-auto': !showDesktop }">
-            <div v-if="showDesktop" class="flex">
-                <div class="flex flex-col w-[320px] mt-4 pl-4 pr-4 gap-3 overflow-auto">
-                    <h3 class="text-xl font-bold"> Table of contents </h3>
+            <div v-if="markdown">
+                <div v-if="showDesktop" class="flex">
+                    <div class="flex flex-col w-[320px] mt-4 pl-4 pr-4 gap-3 overflow-auto">
+                        <h3 class="text-xl font-bold"> Table of contents </h3>
 
-                    <div class="flex flex-col gap-4">
-                        <p @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
-                    </div>
-                </div>
-
-                <USeparator orientation="vertical" class="pb-6" />
-            </div>
-
-            <div v-else>
-                <UAccordion :unmountOnHide=false :items="items" class="pr-3 pl-3 -mt-3">
-                    <template #body="{ item }">
                         <div class="flex flex-col gap-4">
                             <p @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
                         </div>
-                    </template>
-                </UAccordion>
+                    </div>
 
-                <USeparator class="pl-3 pr-3 mb-2 mt-2" :class="{ 'hidden': showDesktop }" />
+                    <USeparator orientation="vertical" class="pb-6" />
+                </div>
+
+                <div v-else>
+                    <UAccordion :unmountOnHide=false :items="items" class="pr-3 pl-3 -mt-3">
+                        <template #body="{ item }">
+                            <div class="flex flex-col gap-4">
+                                <p @click="scrollIntoView(item.id)" class="text-md font-normal cursor-pointer duration-300" v-for="item, index in markdown?.body.toc?.links" :key="item.id" :href="`#${item.id}`" :id="item.id + '-toc'" :title="item.text"> {{ index + 1 }}. {{ item.text }} </p>
+                            </div>
+                        </template>
+                    </UAccordion>
+
+                    <USeparator class="pl-3 pr-3 mb-2 mt-2" :class="{ 'hidden': showDesktop }" />
+                </div>
             </div>
             
             <div class="flex-1 flex justify-center" :class="{ 'overflow-y-auto overflow-x-hidden pl-5': showDesktop }">
                 <div class="flex-1 flex max-w-[1000px] w-[1000px] pr-1" :class="{ 'pr-3': showDesktop, 'overflow-hidden': !showDesktop }">
                     <ContentRenderer id="mk-renderer" v-if="markdown" class="markdown-renderer flex flex-1" :value="markdown" :class="{ 'overflow-hidden': !showDesktop }" />
 
-                    <!-- <div v-else>
-                        <p class="text-red-500"> No content available. </p>
-                    </div> -->
+                    <div v-else class="flex-1 flex justify-center items-center">
+                        <p class="text-red-500"> Failed to load content, make sure the file yuour looking for exist </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,6 +43,8 @@
 </template>
 
 <script setup lang="ts">
+    import type { TestCollectionItem } from '@nuxt/content';
+
     const route = useRoute();
     const routesStore = useRoutesStore();
 
@@ -48,13 +52,15 @@
     const { showDesktop } = storeToRefs(displayStore);
 
     // @ts-ignore
-    const bread = ref([routesStore.routes[1][0], {
+    const bread = ref([routesStore.routes[0][2], {
         label: "Milestone " + route.params.slug[0],
         to: "/docs/milestones/" + route.params.slug[0],
     }]);
 
     let basePath = `/docs/gestion-de-projet/milestone-${route.params.slug[0]}/`;
     for(let i = 1; i < route.params.slug.length; i++) {
+        if(route.params.slug[i] == "") route.params.slug[i] = "readme";
+
         basePath += route.params.slug[i] + '/';
 
         let label = route.params.slug[i].replaceAll("-", " ").slice(0, 1).toUpperCase() + route.params.slug[i].replaceAll("-", " ").slice(1);
@@ -64,10 +70,11 @@
         });
     }
 
+    console.log(basePath)
+
     let filePath = route.params.slug.length == 1 ? basePath + "readme" : basePath.slice(0, basePath.length - 1) + "";   
     const { data: markdown, status, refresh } = useLazyAsyncData("", async () => {
         let data = await queryCollection('test').path(filePath).first();
-        if(data == null) data = await queryCollection('test').path("/docs/gestion-de-projet/milestone-1/management/readme").first();
         
         fixImagesPath(data.body.value);
         fixTables(data.body.value);
@@ -161,6 +168,5 @@
         }
 
         return data;
-
     }
 </script>

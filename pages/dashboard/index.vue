@@ -14,7 +14,7 @@
                         <h3 class="text-lg font-semibold"> Devices status </h3>
 
                         <TemplateCard class="bg-[var(--ui-bg-accented)]" :margin=false>
-                            <p class="font-semibold"> Registered devices: {{ devicesStatus == 'success' ? devices.length : 0 }} </p>
+                            <p class="font-semibold"> Registered devices: {{ greenhouseLoadingStatus == 'success' ? registeredDevicesCount : 0 }} </p>
                         </TemplateCard>
 
                         <div class="flex-1 flex gap-3">
@@ -49,11 +49,11 @@
         </div>
 
         <div class="flex-1 flex flex-col gap-5 mt-5">
-            <div v-if="devices == 'loading'" v-for="index in 3">
+            <div v-if="greenhouseLoadingStatus == 'pending' || greenhouseLoadingStatus == 'idle'" v-for="index in 3">
                 <USkeleton class="bg-[var(--ui-bg)] h-[320px] w-[342px] opacity-60 rounded-2xl" />
             </div>
 
-            <div v-else-if="devices == 'error'">
+            <div v-else-if="greenhouseLoadingStatus == 'error'">
                 <p> Error </p>
             </div>
 
@@ -77,14 +77,24 @@
                 </NuxtLink> -->
             <!-- </div> -->
 
-            <div v-else v-for="device, deviceIndex in devices" :key="device.id" class="flex flex-col gap-2">
-                <p class="font-bold text-2xl"> {{ device.name }} </p>
+            <div v-else v-for="deviceGroup, groupIndex in greenhouse?.devices_groups" :key="deviceGroup.id" class="flex flex-col gap-2">
+                <p class="font-bold text-2xl"> Groupe d'appareils : {{ deviceGroup.name }} </p>
 
                 <div class="flex flex-row flex-wrap gap-2">
-                    <NuxtLink v-for="unit, unitIndex in units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex flex-1">
-                        <Doughnut class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
-                        <!-- <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData.value :title=unit.name :unit=unit.symbol /> -->
-                    </NuxtLink>
+                    <template v-for="device, deviceIndex in deviceGroup.devices" :key="device.id">
+                        <div class="bg-[var(--ui-bg-elevated)] p-5 rounded-2xl">
+                            <p class="font-bold text-2xl"> Appareil : {{ device.name }} </p>
+
+                            <div class="flex flex-row flex-wrap gap-2 mt-5">
+                                <template v-for="sensor, sensorIndex in device.sensors" :key="sensor.id">
+                                    <NuxtLink v-for="unit, unitIndex in sensor.units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex flex-1">
+                                        <Doughnut v-if="unit.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                                        <!-- <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :unit=unit.symbol /> -->
+                                    </NuxtLink>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -97,43 +107,43 @@
     import TemplateCard from '~/components/ui/cards/template.vue';
 
     import Doughnut from "~/components/ui/charts/doughnut.vue";
-    import Value from "~/components/ui/charts/value.vue";
 
-    import { useDevicesStore } from '~/stores/devices';
+    import { useGreenhouseStore } from '~/stores/greenhouse';
     import { useDisplayStore } from '~/stores/display';
+
+    import { DEVICE_CONSIDERED_OFFLINE_AFTER } from '~/constants/greenhouse';
 
     const displayStore = useDisplayStore();
     const { showDesktop } = storeToRefs(displayStore);
 
+    const registeredDevicesCount = ref(0);
+
     const onlineDevices = ref(0);
     const offlineDevices = ref(0);
 
-    const deviceStore = useDevicesStore();
-    const { devices, devicesStatus } = storeToRefs(deviceStore);
-
-    const units = ref([]);
+    const greenhouseStore = useGreenhouseStore();
+    const { greenhouse, greenhouseLoadingStatus } = storeToRefs(greenhouseStore);
 
     watchEffect(() => {
-        if(devicesStatus.value != "idle" && devicesStatus.value != "pending" && devicesStatus.value != "error") {
-            units.value = [];
-
+        if(greenhouseLoadingStatus.value != "idle" && greenhouseLoadingStatus.value != "pending" && greenhouseLoadingStatus.value != "error") {
             // Count online and offline devices, if latestData of all sensors are more than 3 hours ago then the device is offline
-            devices.value.forEach(device => {
-                let online = false;
+            if(greenhouse.value) greenhouse.value.devices_groups.forEach((group : any) => {
+                group.devices.forEach((device : any) => {
+                    let online = false;
 
-                device.sensors.forEach((sensor : any) => {
-                    sensor.units.forEach((unit : any) => {
-                        if(new Date().getTime() - new Date(unit.latestData.created_at).getTime() < 1000 * 60 * 60 * 3) online = true;
-
-                        units.value.push(unit);
+                    device.sensors.forEach((sensor : any) => {
+                        sensor.units.forEach((unit : any) => {
+                            if(new Date().getTime() - new Date(unit.latestData.created_at).getTime() < DEVICE_CONSIDERED_OFFLINE_AFTER) online = true;
+                        });
                     });
-                });
 
-                if(online) onlineDevices.value++;
-                else offlineDevices.value++;
+                    if(online) onlineDevices.value++;
+                    else offlineDevices.value++;
+
+                    registeredDevicesCount.value++;
+                });
             });
-        }
-    });
+        }    });
     
     const routesStore = useRoutesStore();
     // @ts-ignore

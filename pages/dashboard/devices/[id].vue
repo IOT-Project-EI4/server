@@ -31,7 +31,7 @@
 
     import { SERVER_URL } from "~/constants/server";
     
-    import { useDevicesStore } from '~/stores/devices';
+    import { useGreenhouseStore } from '~/stores/greenhouse';
     import { useDisplayStore } from "~/stores/display";
 
     definePageMeta({
@@ -46,8 +46,8 @@
 
     const deviceId: number = useRoute().params.id as any;
 
-    const deviceStore = useDevicesStore();
-    const { devices, devicesStatus } = storeToRefs(deviceStore);
+    const grennhouseStore = useGreenhouseStore();
+    const { greenhouse, greenhouseLoadingStatus } = storeToRefs(grennhouseStore);
 
     const device: any = ref(null);
 
@@ -63,10 +63,14 @@
     });
 
     watchEffect(() => {
-        // Check if device id is in devices
-        if(devicesStatus.value == 'idle' || devicesStatus.value == 'pending' || devicesStatus.value == 'error') return;
+        if(greenhouseLoadingStatus.value == 'idle' || greenhouseLoadingStatus.value == 'pending' || greenhouseLoadingStatus.value == 'error') return;
         else {
-            let deviceObject = devices.value.find((device: any) => device.id == deviceId);
+            if(!greenhouse.value) return;
+
+            // Check if device id is in devices
+            // let deviceObject = devices.value.find((device: any) => device.id == deviceId);
+            let deviceObject = greenhouse.value.devices_groups.flatMap((group: any) => group.devices).find((device: any) => device.id == deviceId);
+            console.log(deviceObject);
 
             if(deviceObject == undefined) device.value = null;
             else device.value = deviceObject;

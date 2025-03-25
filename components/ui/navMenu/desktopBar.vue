@@ -1,8 +1,16 @@
 <template>
-    <div class="h-23 flex-1 flex items-center">
-        <div class="w-[400px] flex flex-col">
+    <div class="h-23 flex-1 flex items-center justify-center">
+        <div class="w-[400px] 2xl:w-[600px] flex flex-col justify-center duration-300">
             <UModal v-model:open="open" focusable="false">
-                <UButton focusable="false" label="Search ..." color="neutral" variant="subtle" icon="i-lucide-search" />
+                <UButton focusable="false" color="neutral" variant="subtle">
+                    <div class="flex flex-row gap-2 items-center flex-1">
+                        <UIcon name="i-lucide-search" class="text-[var(--ui-text-muted)]" />
+                        <p class="text-[var(--ui-text-muted)]"> Search ... </p>
+                    </div>
+
+                    <UKbd size="lg">&nbsp;Ctrl&nbsp;</UKbd> + <UKbd size="lg"> s </UKbd>
+                </UButton>
+
 
                 <template #content>
                     <UCommandPalette v-model:search-term="searchTerm" :loading="status === 'pending'" :groups="groups" placeholder="Search ..." class="h-80" @update:model-value="onSelect" />
@@ -23,9 +31,14 @@
         let savedTitles: any = [];
 
         for(let section of result) {
+            let docType: string;
+
+            if(section.id.includes('#')) docType = "Section";
+            else docType = "Page";
+
             if(!savedTitles.includes(section.title)) {
                 formattedResult.push({
-                    label: section.title,
+                    label: "<b>" + docType + "</b>: <i>" + section.title + "</i>",
                     to: section.id,
                 });
             }
@@ -43,7 +56,7 @@
 
     const groups = computed(() => [{
         id: 'pages',
-        label: 'Pages',
+        label: 'Main pages',
         items: [{
                 label: 'Home',
                 to: '/',
@@ -60,22 +73,14 @@
             items: docsTitles.value || [],
         }]);
 
-    // define a handler
     function openSearch(event: any) {
-        if (event.ctrlKey && event.key == 's') {
+        if(event.ctrlKey && event.key == 's') {
             event.preventDefault();
             open.value = !open.value;
         }
     }
     
     onMounted(() => {
-        document.addEventListener('keydown', openSearch);
-
-        watchEffect(() => {
-            if(!open.value) {
-                console.log(document.getElementById('button'));
-                // document.getElementById('button').blur();
-            }
-        });
+        window.addEventListener('keydown', openSearch);
     });
 </script>

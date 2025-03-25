@@ -18,9 +18,8 @@ INSERT INTO device_group (name, greenhouse_id) VALUES ('Sans groupe', 1);
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (1, 'Temperature', '°C', -20, 50);
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (2, 'Humidity', '%', 0, 100);
 
-INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (4, 'Battery capacity', '%', 0, 100); -- TODO ??
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (5, 'Battery voltage', 'V', 2, 4);
-INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (6, 'Battery capacity', '%', 0, 100); -- TODO ??
+INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (6, 'Battery capacity', '%', 0, 100);
 
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (8, 'Red light', '', 0, 255);
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (9, 'Green light', '', 0, 255);
@@ -48,10 +47,9 @@ INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (2, 'Battery ADC
 INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (5, 'Inground humidity', 2, NULL);
 INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (6, 'Inground temperature', 2, NULL);
 
-INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (7, 'Light color', 2, NULL); -- TODO ??
 INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (8, 'CO2 sensor', 2, NULL);
 
-INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (9, 'Light color', 2, NULL); -- TODO ??
+INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (9, 'Light color', 2, NULL);
 INSERT INTO sensor (id, name, device_id, sensor_type_id) VALUES (10, 'Light intensity', 2, NULL);
 
 -- Add unit links

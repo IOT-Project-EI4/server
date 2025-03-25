@@ -2,15 +2,15 @@ import { defineStore } from 'pinia';
 
 import { SERVER_URL } from '~/constants/server';
 
-export const useDevicesStore = defineStore('devicesStore', () => {
-    // const pendingDevices: Ref<Array<Device> | Loading | Error> = ref("loading");
+import type { Greenhouse } from '~/interfaces/database_types';
 
-    const { data : devices, status : devicesStatus, refresh: devicesRefresh } = useLazyAsyncData('devices', async () => {
+export const useGreenhouseStore = defineStore('greenhouseStore', () => {
+    const { data : greenhouse, status : greenhouseLoadingStatus, refresh: greenhouseDataRefresh } = useLazyAsyncData('devices', async (): Promise<Greenhouse> => {
         let response : any = await $fetch(SERVER_URL + "client/get-devices", {
             query: { greenhouse_id: 1, },
         });
 
-        return JSON.parse(response).devices;
+        return JSON.parse(response).greenhouse as Greenhouse;
     });
 
     // async function getPendingDevices() {
@@ -56,5 +56,5 @@ export const useDevicesStore = defineStore('devicesStore', () => {
     //     return result;
     // }
 
-    return { devices, devicesStatus, devicesRefresh }
+    return { greenhouse, greenhouseLoadingStatus, greenhouseDataRefresh }
 });

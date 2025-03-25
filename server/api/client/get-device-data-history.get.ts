@@ -1,3 +1,56 @@
+// import mysql from 'mysql';
+
+// import { requestHandler } from '~/server/composables/api/apiRequests/requestsHandler';
+// import { sqlRequestHandler } from '~/server/composables/api/database/sqlResquestHandler';
+
+// import { Measurement } from '~/interfaces/database_types';
+
+// export default defineEventHandler(async (event) => {
+//     return await requestHandler({
+//         event: event,
+//         log: true,
+
+//         name: "Smart farming - Get sensor data history",
+//         dbName: "smart-farming",
+
+//         queryParams: ["sensor_id", "unit_id", "from", "to", "mean_duration"],
+
+//         handler: handler,
+//     });
+// });
+
+// async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
+//     let fromDate = new Date(params.from * 1);
+//     let toDate = new Date(params.to * 1);
+
+//     // Get last 100 000 measurements for the sensor
+//     let sql = mysql.format(`SELECT * FROM measurements WHERE sensor_id = ? AND unit_id = ? AND created_at >= ? AND created_at <= ? ORDER BY created_at DESC LIMIT 100000`, [params.sensor_id, params.unit_id, fromDate, toDate]);
+//     let data : Measurement[] = await sqlRequestHandler(dbPool, sql);
+
+//     // Do the mean of the values for each mean_duration
+//     let meanData: Array<number> = [];
+
+//     let lastDate = new Date();
+//     let sum = 0; let count = 0;
+//     let meanDuration = params.mean_duration * 60 * 1000; // Convert from minutes to milliseconds
+
+//     for(let i = 0; i < data.length; i++) {
+//         let date = new Date(data[i].created_at);
+
+//         sum += data[i].value;
+//         count ++;
+
+//         if(date.getTime() + meanDuration < lastDate.getTime()) {
+//             meanData.unshift(sum / count);
+
+//             sum = 0; count = 0;
+//             lastDate = date;
+//         }
+//     }
+
+//     return { data: meanData };
+// }
+
 import mysql from 'mysql';
 
 import { requestHandler } from '~/server/composables/api/apiRequests/requestsHandler';

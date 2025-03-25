@@ -13,10 +13,19 @@ export const useRoutesStore = defineStore('routes', () => {
                 label: 'Dashboard',
                 icon: 'i-ion-easel-outline',
                 to: "/dashboard",
-            },
-        ],
+                children: [
+                    {
+                        label: 'Main',
+                        to: '/dashboard',
+                    },
 
-        [
+                    {
+                        label: 'Devices',
+                        // to: '/dashboard/devices',
+                    },
+                ],
+            },
+
             {
                 label: 'Documentation',
                 icon: 'i-ion-file-tray-full-outline',
@@ -36,6 +45,11 @@ export const useRoutesStore = defineStore('routes', () => {
                     {
                         label: 'Revue de projet 2',
                         to: '/docs/milestones/2',
+                    },
+
+                    {
+                        label: 'Revue de projet 3',
+                        to: '/docs/milestones/3',
                     },
                 ],
             },

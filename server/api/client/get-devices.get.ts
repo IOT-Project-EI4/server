@@ -3,10 +3,12 @@ import mysql from 'mysql';
 import { requestHandler } from '~/server/composables/api/apiRequests/requestsHandler';
 import { sqlRequestHandler } from '~/server/composables/api/database/sqlResquestHandler';
 
+import type { Greenhouse, DeviceGroup, Device, Sensor, Unit } from '~/interfaces/database_types';
+
 export default defineEventHandler(async (event) => {
     return await requestHandler({
         event: event,
-        log: true,
+        log: false,
 
         name: "Smart farming - Get devices",
         dbName: "smart-farming",
@@ -20,7 +22,7 @@ export default defineEventHandler(async (event) => {
 async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]: any }) {
     // Get green_house infos
     let sql = mysql.format(`SELECT * FROM greenhouse WHERE id = ?`, [params.greenhouse_id]);
-    let greenhouseList = await sqlRequestHandler(dbPool, sql);
+    let greenhouseList: Greenhouse[] = await sqlRequestHandler(dbPool, sql);
 
     // Check if greenhouse exists
     if(greenhouseList.length < 1) return { greenhouse: undefined }; // Greenhouse not found
