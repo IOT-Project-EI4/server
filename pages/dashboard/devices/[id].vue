@@ -7,25 +7,47 @@
                 <p class="text-red-500"> Device not found </p>
             </div>
 
-            <div v-else-if="dataStatus == 'idle' || dataStatus == 'pending'" v-for="index in 2" class="flex gap-3" :class="{ 'flex-row-reverse': index % 2 == 0 && showDesktop, 'flex-col-reverse': !showDesktop }">
-                <USkeleton class="flex-1 h-[320px]" />
-                <USkeleton class="bg-[var(--ui-bg-elevated)] h-[320px] w-[342px]" />
+            <div v-else-if="dataStatus == 'idle' || dataStatus == 'pending'" v-for="index in 5" class="flex gap-3" :class="{ 'flex-row-reverse': index % 2 == 0 && showDesktop, 'flex-col-reverse': !showDesktop }">
+                <USkeleton class="bg-[var(--ui-bg-elevated)] h-[320px] w-full" />
             </div>
 
             <!-- :class="{ 'flex-row-reverse': unit.id % 2 == 0 && showDesktop, 'flex-col-reverse': !showDesktop }" -->
-            <div v-else v-for="sensor, sensorIndex in deviceData.sensors" :key="sensor.id" class="flex flex-col">
-                <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex-1 flex flex-col gap-3 pb-2 overflow-x-auto">
-                    <Line class="flex-1 min-w-[700px]" :id=unit.id :data="data[sensorIndex][unitIndex]" :labels="labels[sensorIndex][unitIndex]" :title="`${sensor.name} - ${unit.name}`" :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+            <div v-else class="flex flex-col gap-3">
+                <div class="flex gap-3 items-center">
+                    <p> Du: </p>
+
+                    <UPopover>
+                        <UButton color="neutral" variant="subtle" icon="i-lucide-calendar">
+                            {{ modelValue ? df.format(modelValue.toDate(getLocalTimeZone())) : 'Select a date' }}
+                        </UButton>
+
+                        <template #content>
+                            <UCalendar v-model="modelValue" class="p-2" />
+                        </template>
+                    </UPopover>
+
+                    <p> à: </p>
+                    <p> aujourd'hui </p>
                 </div>
 
-                <!-- <Line class="flex-1" :id=unit.id :data="data[index]" :labels="labels[index]" :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
-                <Doughnut class="bg-[var(--ui-bg-elevated)]" :id=unit.id :value=unit.latestData.value :targetValue="25" :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol /> -->
+                <div v-for="sensor, sensorIndex in deviceData.sensors" :key="sensor.id" class="flex flex-col">
+                    <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex-1 flex flex-col gap-3 pb-2 overflow-x-auto">
+                        <Line class="flex-1 min-w-[700px]" :id=unit.id :data="data[sensorIndex][unitIndex]" :labels="labels[sensorIndex][unitIndex]" :title="`${sensor.name} - ${unit.name}`" :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                    </div>
+
+                    <!-- <Line class="flex-1" :id=unit.id :data="data[index]" :labels="labels[index]" :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                    <Doughnut class="bg-[var(--ui-bg-elevated)]" :id=unit.id :value=unit.latestData.value :targetValue="25" :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol /> -->
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+
+
 <script setup lang="ts">
+    import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
+
     import Line from "@/components/ui/charts/line.vue";
     import Doughnut from "~/components/ui/charts/doughnut.vue";
 
@@ -53,7 +75,10 @@
 
     const { data : deviceData, status : dataStatus, refresh: dataRefresh } = useLazyAsyncData('deviceData', async () => {
         let response : any = await $fetch(SERVER_URL + "client/get-device-data-history", {
-            query: { device_id: device.value.id },
+            query: {
+                device_id: device.value.id,
+                from: new Date(modelValue.value.year, modelValue.value.month - 1, modelValue.value.day).getTime(),
+            },
         });
 
         return JSON.parse(response);
@@ -119,6 +144,24 @@
             
             labels.value = dataLabels;
             data.value = dataHistory;
+        }
+    });
+
+    // Get today date, substract 7 days, and get year, month and day
+    const today = new Date();
+    const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+
+    const year = lastWeek.getFullYear();
+    const month = lastWeek.getMonth() + 1; // Months are zero-based
+    const day = lastWeek.getDate();
+
+    const df = new DateFormatter('fr-FR')
+    const modelValue = shallowRef(new CalendarDate(year, month, day));
+
+    // On calendar date change, refresh data
+    watchEffect(() => {
+        if(modelValue.value) {
+            dataRefresh();
         }
     });
 

@@ -35,6 +35,7 @@ INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUE
 
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (16, 'Light intensity', ' lux', 0, 50000);
 INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (17, 'Light color', 'K', 0, 8000);
+INSERT INTO measurement_units (id, name, symbol, lower_bound, upper_bound) VALUES (18, 'Light color 2', 'K', 0, 10000);
 
 -- Add test devices
 
@@ -65,5 +66,6 @@ INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (10, 9, 8, 'va
 INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (11, 9, 9, 'value');
 INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (12, 9, 10, 'value');
 INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (13, 9, 17, 'value');
+INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (16, 9, 18, 'value');
 INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (14, 2, 6, 'value');
 INSERT INTO unit_links(id, sensor_id, unit_id, graph_type) VALUES (15, 10, 16, 'value');

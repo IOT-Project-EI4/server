@@ -44,7 +44,7 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
 
             // For each sensor get linked units
             for(let k = 0; k < sensors.length; k++) {
-                sql = mysql.format(`SELECT * FROM measurement_units INNER JOIN unit_links ON measurement_units.id = unit_links.unit_id WHERE unit_links.sensor_id = ?`, [sensors[k].id]);
+                sql = mysql.format(`SELECT * FROM measurement_units INNER JOIN unit_links ON measurement_units.id = unit_links.unit_id WHERE unit_links.sensor_id = ? AND unit_links.graph_type != "hidden"`, [sensors[k].id]);
                 let units: Unit[] = await sqlRequestHandler(dbPool, sql) as Unit[]; // Get all units linked to the sensor
 
                 // For each unit get the latest data

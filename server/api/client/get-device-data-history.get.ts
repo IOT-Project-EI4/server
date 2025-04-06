@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
         name: "Smart farming - Get devices",
         dbName: "smart-farming",
 
-        queryParams: ["device_id"],
+        queryParams: ["device_id", "from"],
 
         handler: handler,
     });
@@ -78,7 +78,7 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
     // For each sensor get linked units
     for(let j = 0; j < sensors.length; j++) {
         // Get units linked to the sensor
-        let sql = mysql.format(`SELECT * FROM measurement_units INNER JOIN unit_links ON measurement_units.id = unit_links.unit_id WHERE unit_links.sensor_id = ?`, [sensors[j].id]);
+        let sql = mysql.format(`SELECT * FROM measurement_units INNER JOIN unit_links ON measurement_units.id = unit_links.unit_id WHERE unit_links.sensor_id = ? AND unit_links.graph_type != "hidden"`, [sensors[j].id]);
         let units = await sqlRequestHandler(dbPool, sql);
 
         // For each unit get the last 1000 measurements
@@ -95,8 +95,8 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
             for(let i = 0; i < data.length; i++) {
                 let date = new Date(data[i].created_at);
 
-                // If date is older than 24 hours then discard the data
-                // if(date.getTime() + 60 * 1000 * 60 * 72 < Date.now()) break;
+                // If date is older than fromDate, skip it
+                if(date.getTime() < params.from * 1) continue;
 
                 sum += data[i].value;
                 count ++;
