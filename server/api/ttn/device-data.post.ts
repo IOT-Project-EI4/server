@@ -132,7 +132,7 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
 
     // Overide lux data readings by calculating it from r,g,b values
     let lux = (-0.32466 * r) + (1.57837 * g) + (-0.73191 * b);
-    lux *= 60;
+    lux *= 250;
     lux = Math.round(lux);
 
     lux = Math.max(0, lux); // Lux can't be negative
@@ -157,9 +157,9 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
         cct = Math.max(0, cct); // CCT can't be negative
         cct = Math.min(65000, cct); // CCT can't be more than 65535
 
-        measurements[12].value = cct;
+        measurements[13].value = cct;
     } else {
-        measurements[12].value = 0; // If r,g,b are 0, set cct to 0
+        measurements[13].value = 0; // If r,g,b are 0, set cct to 0
     }
 
     // Increment the battery voltage value by 0.18V

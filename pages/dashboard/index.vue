@@ -87,9 +87,9 @@
 
                             <div class="flex flex-row flex-wrap gap-2 mt-5">
                                 <template v-for="sensor, sensorIndex in device.sensors" :key="sensor.id">
-                                    <NuxtLink v-for="unit, unitIndex in sensor.units" :key="unit.id" :to="`dashboard/devices/${device.id}`" class="flex flex-1">
-                                        <Doughnut v-if="unit.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
-                                        <!-- <Value v-if="sensor.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :unit=unit.symbol /> -->
+                                    <NuxtLink v-for="unit, unitIndex in sensor.units" :key="unit.id" :to="`dashboard/devices/${device.id}#unit_${unit.id}`" class="flex flex-1">
+                                        <Doughnut v-if="unit.graph_type == 'donut'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                                        <Value v-if="unit.graph_type == 'value'" class="bg-[var(--ui-bg-elevated)] flex flex-1" :id=unit.id :value=unit.latestData?.value :title=unit.name :unit=unit.symbol />
                                     </NuxtLink>
                                 </template>
                             </div>
@@ -107,6 +107,7 @@
     import TemplateCard from '~/components/ui/cards/template.vue';
 
     import Doughnut from "~/components/ui/charts/doughnut.vue";
+    import Value from "~/components/ui/charts/value.vue";
 
     import { useGreenhouseStore } from '~/stores/greenhouse';
     import { useDisplayStore } from '~/stores/display';

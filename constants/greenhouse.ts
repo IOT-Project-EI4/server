@@ -1,1 +1,1 @@
-export const DEVICE_CONSIDERED_OFFLINE_AFTER = 65 * 60 * 1000; // 65 minutes
+export const DEVICE_CONSIDERED_OFFLINE_AFTER = 60 * 60 * 1000; // 60 minutes

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col overflow-hidden rounded-lg p-3 gap-3 bg-[var(--ui-bg-elevated)]">
+    <div :id="id" class="flex flex-col overflow-hidden rounded-lg p-3 gap-3 bg-[var(--ui-bg-elevated)]">
         <p class="text-2xl font-bold m-1"> {{ title }} </p>
 
         <Chart class="max-h-[240px]" type="line" :data="chartData" :options="chartOptions" />
@@ -14,7 +14,7 @@
 
     const props = defineProps({
         id: {
-            type: Number,
+            type: String,
             required: true
         },
 
@@ -80,8 +80,13 @@
             responsive: true,
             maintainAspectRatio: false,
 
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+
             plugins: {
-                tooltip: { enabled: false },
+                // tooltip: { enabled: false },
                 legend: { display: false },
             },
 
@@ -122,6 +127,25 @@
             },
         };
     });
+
+    // Create a custom tooltip positioner to put at the bottom of the chart area
+    Tooltip.positioners.bottom = function(items) {
+        const pos = Tooltip.positioners.average(items);
+
+        // Happens when nothing is found
+        if (pos === false) {
+            return false;
+        }
+
+        const chart = this.chart;
+
+        return {
+            x: pos.x,
+            y: pos.y,
+            xAlign: 'center',
+            yAlign: 'bottom',
+        };
+    };
 
     onMounted(() => {
         bgColor.value = getComputedStyle(document.body).getPropertyValue('--ui-bg-elevated');

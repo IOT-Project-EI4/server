@@ -18,21 +18,30 @@
 
                     <UPopover>
                         <UButton color="neutral" variant="subtle" icon="i-lucide-calendar">
-                            {{ modelValue ? df.format(modelValue.toDate(getLocalTimeZone())) : 'Select a date' }}
+                            {{ fromDate ? df.format(fromDate.toDate(getLocalTimeZone())) : 'Select a date' }}
                         </UButton>
 
                         <template #content>
-                            <UCalendar v-model="modelValue" class="p-2" />
+                            <UCalendar v-model="fromDate" class="p-2" />
                         </template>
                     </UPopover>
 
                     <p> à: </p>
-                    <p> aujourd'hui </p>
+                    
+                    <UPopover>
+                        <UButton color="neutral" variant="subtle" icon="i-lucide-calendar">
+                            {{ toDate ? df.format(toDate.toDate(getLocalTimeZone())) : 'Select a date' }}
+                        </UButton>
+
+                        <template #content>
+                            <UCalendar v-model="toDate" class="p-2" />
+                        </template>
+                    </UPopover>
                 </div>
 
                 <div v-for="sensor, sensorIndex in deviceData.sensors" :key="sensor.id" class="flex flex-col">
                     <div v-for="unit, unitIndex in sensor.units" :key="unit.id" class="flex-1 flex flex-col gap-3 pb-2 overflow-x-auto">
-                        <Line class="flex-1 min-w-[700px]" :id=unit.id :data="data[sensorIndex][unitIndex]" :labels="labels[sensorIndex][unitIndex]" :title="`${sensor.name} - ${unit.name}`" :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
+                        <Line class="flex-1 min-w-[700px]" :id="`unit_${unit.id}`" :data="data[sensorIndex][unitIndex]" :labels="labels[sensorIndex][unitIndex]" :title="`${sensor.name} - ${unit.name}`" :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
                     </div>
 
                     <!-- <Line class="flex-1" :id=unit.id :data="data[index]" :labels="labels[index]" :title=unit.name :min=unit.lower_bound :max=unit.upper_bound :unit=unit.symbol />
@@ -63,6 +72,8 @@
         }
     });
 
+    const route = useRoute();
+
     const displayStore = useDisplayStore();
     const { showDesktop } = storeToRefs(displayStore);
 
@@ -73,11 +84,17 @@
 
     const device: any = ref(null);
 
+    const firstLoad = ref(true);
+
     const { data : deviceData, status : dataStatus, refresh: dataRefresh } = useLazyAsyncData('deviceData', async () => {
+        // Add + 1 day to toDate
+        let nextDay = new Date(toDate.value.year, toDate.value.month - 1, toDate.value.day + 1);
+
         let response : any = await $fetch(SERVER_URL + "client/get-device-data-history", {
             query: {
                 device_id: device.value.id,
-                from: new Date(modelValue.value.year, modelValue.value.month - 1, modelValue.value.day).getTime(),
+                from: new Date(fromDate.value.year, fromDate.value.month - 1, fromDate.value.day).getTime(),
+                to: new Date(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate()).getTime(),
             },
         });
 
@@ -95,12 +112,15 @@
             // Check if device id is in devices
             // let deviceObject = devices.value.find((device: any) => device.id == deviceId);
             let deviceObject = greenhouse.value.devices_groups.flatMap((group: any) => group.devices).find((device: any) => device.id == deviceId);
-            console.log(deviceObject);
 
             if(deviceObject == undefined) device.value = null;
             else device.value = deviceObject;
         }
     });
+
+    function scrollIntoView(id: string) {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }
 
     const labels: Ref<string[][][]> = ref([]);
     const data: Ref<number[][][]> = ref([]);
@@ -144,25 +164,32 @@
             
             labels.value = dataLabels;
             data.value = dataHistory;
+
+            nextTick(() => {
+                setTimeout(() => {
+                    if(firstLoad.value) {
+                        firstLoad.value = false;
+                        document.getElementById(route.hash.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
+                    }
+                }, 50);
+            });
         }
     });
 
     // Get today date, substract 7 days, and get year, month and day
     const today = new Date();
+    const nextDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    const toDate = shallowRef(new CalendarDate(nextDay.getFullYear(), nextDay.getMonth() + 1, nextDay.getDate()));
+
     const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    const fromDate = shallowRef(new CalendarDate(lastWeek.getFullYear(), lastWeek.getMonth() + 1, lastWeek.getDate()));
 
-    const year = lastWeek.getFullYear();
-    const month = lastWeek.getMonth() + 1; // Months are zero-based
-    const day = lastWeek.getDate();
-
-    const df = new DateFormatter('fr-FR')
-    const modelValue = shallowRef(new CalendarDate(year, month, day));
+    const df = new DateFormatter('fr-FR');
 
     // On calendar date change, refresh data
     watchEffect(() => {
-        if(modelValue.value) {
-            dataRefresh();
-        }
+        if(fromDate.value) dataRefresh();
+        if(toDate.value) dataRefresh();
     });
 
     const routesStore = useRoutesStore();

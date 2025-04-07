@@ -70,8 +70,6 @@
         });
     }
 
-    console.log(basePath)
-
     let filePath = route.params.slug.length == 1 ? basePath + "readme" : basePath.slice(0, basePath.length - 1) + "";   
     const { data: markdown, status, refresh } = useLazyAsyncData("", async () => {
         let data = await queryCollection('test').path(filePath).first();

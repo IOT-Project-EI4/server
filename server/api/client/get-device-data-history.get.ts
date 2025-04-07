@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
         name: "Smart farming - Get devices",
         dbName: "smart-farming",
 
-        queryParams: ["device_id", "from"],
+        queryParams: ["device_id", "from", "to"],
 
         handler: handler,
     });
@@ -97,6 +97,9 @@ async function handler(event: any, dbPool: mysql.Pool, params: { [index: string]
 
                 // If date is older than fromDate, skip it
                 if(date.getTime() < params.from * 1) continue;
+
+                // If date is newer than toDate, skip it
+                if(date.getTime() > params.to * 1) continue;
 
                 sum += data[i].value;
                 count ++;
